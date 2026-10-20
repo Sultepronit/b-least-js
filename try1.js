@@ -1,5 +1,6 @@
 // https://github.com/wollmich/metas-b-least/
 
+import { Matrix, pseudoInverse } from "ml-matrix"
 import { example1 } from "./examples.js"
 
 // def b_linear_func(y, b):
@@ -14,7 +15,7 @@ function linearFunc(y, b) {
 
 // def b_objective_func(x, ux, y, uy, y2, b, func):  # pylint: disable=R0913, R0917
 function objectiveFunc(data, y2, b, func = linearFunc) {
-    const x2 = func(y2, b)
+    const x2 = func(y2, b)[0]
 
     const wdx = x2.map((value, i) => (value - data.x[i]) / data.ux[i])
 
@@ -92,6 +93,45 @@ function jacobian(params, data, scale, func) {
     return jacobi
 }
 
+function transpose(matrix) {
+    return matrix[0].map((_, j) => matrix.map(row => row[j]))
+}
+
+function multiply(a, b) {
+    const bt = transpose(b)
+
+    return a.map(row => bt.map(col => row.reduce((sum, value, i) => sum + value * col[i], 0)))
+}
+
+// def _b_covariance(params, cal_data, y2_b_scale, func):  # pylint: disable=R0914
+function covariance(params, data, scale, func) {
+    const n = data.x.length
+    const bScale = scale.slice(n)
+
+    const J = new Matrix(jacobian(params, data, scale, func))
+
+    // Узгоджуємо поріг із NumPy pinv за замовчуванням.
+    const maxDim = Math.max(J.rows, J.columns)
+    const JPinv = pseudoInverse(J, 1e-15 / maxDim).to2DArray()
+
+    const dbDg = JPinv.slice(n).map(row => row.map(value => -value))
+
+    const scaled = dbDg.map((row, i) => row.map(value => value * bScale[i]))
+
+    return multiply(scaled, transpose(scaled))
+}
+
+// def _b_residuals(params, cal_data, y2_b_scale, func):
+function residuals(params, data, scale, func) {
+    const n = data.x.length
+
+    const actual = params.map((value, i) => value * scale[i])
+    const y2 = actual.slice(0, n)
+    const b = actual.slice(n)
+
+    return objectiveFunc(data, y2, b, func)
+}
+
 export function test1() {
     const b0 = [0, 0.5]
     const y2 = example1.y
@@ -111,4 +151,6 @@ export function test1() {
 
     console.log("params:", params)
     console.table(jac)
+
+    console.log(residuals(params, example1, scale, linearFunc))
 }
