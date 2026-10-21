@@ -3,6 +3,7 @@
 import { levenbergMarquardt } from "ml-levenberg-marquardt"
 import { Matrix, pseudoInverse } from "ml-matrix"
 import { example1, example2 } from "./examples.js"
+import { get10723 } from "./iso10723.js"
 
 // def b_linear_func(y, b):
 function linearFunc(y, b) {
@@ -27,8 +28,20 @@ function secondOrderPoly(y, b) {
     return [x, dxdy, dxdb]
 }
 
+function thirdOrderPoly(y, b) {
+    const [b0, b1, b2, b3] = b
+
+    const x = y.map(value => b0 + b1 * value + b2 * value ** 2 + b3 * value ** 3)
+
+    const dxdy = y.map(value => b1 + 2 * b2 * value + 3 * b3 * value ** 2)
+
+    const dxdb = [y.map(() => 1), [...y], y.map(value => value ** 2), y.map(value => value ** 3)]
+
+    return [x, dxdy, dxdb]
+}
+
 // def b_objective_func(x, ux, y, uy, y2, b, func):  # pylint: disable=R0913, R0917
-function objectiveFunc(data, y2, b, func = linearFunc) {
+function objectiveFunc(data, y2, b, func) {
     const x2 = func(y2, b)[0]
 
     const wdx = x2.map((value, i) => (value - data.x[i]) / data.ux[i])
@@ -78,12 +91,25 @@ function quadraticStart(data) {
         .map(row => row[0])
 }
 
+function cubicStart(data) {
+    const V = new Matrix(data.y.map(y => [1, y, y ** 2, y ** 3]))
+
+    const X = new Matrix(data.x.map(x => [x]))
+
+    return pseudoInverse(V)
+        .mmul(X)
+        .to2DArray()
+        .map(row => row[0])
+}
+
 function leastStart(data, func) {
     switch (func) {
         case linearFunc:
             return linearStart(data)
         case secondOrderPoly:
             return quadraticStart(data)
+        case thirdOrderPoly:
+            return cubicStart(data)
     }
 }
 
@@ -239,14 +265,44 @@ function present(b, bCov, bRes) {
 }
 
 export function test1() {
-    const re = b_least(example1, linearFunc)
-    console.log(re)
-    present(...re)
+    // const re = b_least(example1, linearFunc)
+    // console.log(re)
+    // present(...re)
 
-    console.group("example 2, linear:")
-    present(...b_least(example2, linearFunc))
+    // console.group("example 2, linear:")
+    // present(...b_least(example2, linearFunc))
+    // console.groupEnd()
+
+    // console.group("example 2, quadratic:")
+    // present(...b_least(example2, secondOrderPoly))
+    // console.groupEnd()
+
+    // console.group("example 2, cubic:")
+    // present(...b_least(example2, thirdOrderPoly))
+    // console.groupEnd()
+
+    const ex4 = get10723(0)
+    const ex4c = { x: ex4.y, ux: ex4.uy, y: ex4.x, uy: ex4.ux }
+    // console.log(ex4.name)
+    console.log(ex4)
+
+    console.group("ISO 10723, linear a:")
+    present(...b_least(ex4, linearFunc))
     console.groupEnd()
 
-    console.group("example 3, quadratic:")
-    present(...b_least(example2, secondOrderPoly))
+    console.group("ISO 10723, linear c:")
+    present(...b_least(ex4c, linearFunc))
+    console.groupEnd()
+
+    console.group("ISO 10723, quadratic a:")
+    present(...b_least(ex4, secondOrderPoly))
+    console.groupEnd()
+
+    console.group("ISO 10723, quadratic c:")
+    present(...b_least(ex4c, secondOrderPoly))
+    console.groupEnd()
+
+    console.group("ISO 10723, cubic c:")
+    present(...b_least(ex4c, thirdOrderPoly))
+    console.groupEnd()
 }
