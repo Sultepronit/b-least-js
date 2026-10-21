@@ -31,13 +31,21 @@ const data = [
 
 export function get10723(index) {
     const { name, x, ux, responses } = data[index]
+    // const corrResp = responses.map(r => {
+    //     return r.map(e => e / 1000)
+    // })
+
     const y = responses.map(e => calculateAverage(e))
+    // const y = corrResp.map(e => calculateAverage(e))
+    // const y = responses.map(e => calculateAverage(e) / 1000)
     return {
         name,
         x,
         ux,
         y,
         uy: responses.map((r, i) => calculate_s(r, y[i])),
+        // uy: corrResp.map((r, i) => calculate_s(r, y[i])),
+        // uy: responses.map((r, i) => calculate_s(r, y[i] * 1000) / 1000),
     }
 }
 
