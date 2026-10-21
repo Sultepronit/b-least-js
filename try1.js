@@ -1,5 +1,6 @@
 // https://github.com/wollmich/metas-b-least/
 
+import { levenbergMarquardt } from "ml-levenberg-marquardt"
 import { Matrix, pseudoInverse } from "ml-matrix"
 import { example1 } from "./examples.js"
 
@@ -132,25 +133,101 @@ function residuals(params, data, scale, func) {
     return objectiveFunc(data, y2, b, func)
 }
 
-export function test1() {
-    const b0 = [0, 0.5]
-    const y2 = example1.y
+// def b_least(cal_data, func):
+function b_least(calData, func) {
+    const n = calData.x.length
 
-    console.log(linearFunc(example1.y, b0))
-    const b = linearStart(example1)
-    console.log(b)
-    console.log(objectiveFunc(example1, example1.y, b))
+    const y2Start = [...calData.y]
+    // const bStart = b_least_start(calData, func)
+    const bStart = linearStart(calData)
 
-    const start = [...y2, ...b]
-
+    const start = [...y2Start, ...bStart]
     const scale = start.map(value => (value === 0 ? 1 : value))
+    const initialValues = start.map((value, i) => value / scale[i])
 
-    const params = start.map((value, i) => value / scale[i])
+    const indices = Array.from({ length: 2 * n }, (_, i) => i)
+    const zeros = indices.map(() => 0)
 
-    const jac = jacobian(params, example1, scale, linearFunc)
+    function residualsInn(params) {
+        return residuals(params, calData, scale, func)
+    }
 
-    console.log("params:", params)
-    console.table(jac)
+    function model(params) {
+        const r = residualsInn(params)
+        return index => r[index]
+    }
 
-    console.log(residuals(params, example1, scale, linearFunc))
+    function jacobianModel(params) {
+        const J = jacobian(params, calData, scale, func)
+        return index => J[index]
+    }
+
+    const result = levenbergMarquardt(
+        { x: indices, y: zeros },
+        params => index => model(params)(index),
+        {
+            initialValues,
+            jacobianFunction: params => index => jacobianModel(params)(index),
+            maxIterations: 1000,
+        },
+    )
+
+    const y2bOpt = result.parameterValues.map((value, i) => value * scale[i])
+
+    const bOpt = y2bOpt.slice(n)
+    const bOptCov = covariance(result.parameterValues, calData, scale, func)
+    const bRes = residualsInn(result.parameterValues)
+
+    return [bOpt, bOptCov, bRes]
+}
+
+function present(b, bCov, bRes) {
+    const uncertainties = bCov.map((row, i) => Math.sqrt(row[i]))
+
+    const residualSum = bRes.reduce((sum, value) => sum + value * value, 0)
+
+    const maxAbsDeviation = Math.max(...bRes.map(value => Math.abs(value)))
+
+    console.log("Coefficients b")
+    console.log(b)
+
+    console.log("Uncertainties u(b)")
+    console.log(uncertainties)
+
+    console.log("Covariance cov(b)")
+    console.table(bCov)
+
+    console.log("Residual")
+    console.log(residualSum)
+
+    console.log("Maximum absolute value of weighted deviations")
+    console.log(maxAbsDeviation)
+}
+
+export function test1() {
+    // const b0 = [0, 0.5]
+    // const y2 = example1.y
+
+    // console.log(linearFunc(example1.y, b0))
+    // const b = linearStart(example1)
+    // console.log(b)
+    // console.log(objectiveFunc(example1, example1.y, b))
+
+    // const start = [...y2, ...b]
+
+    // const scale = start.map(value => (value === 0 ? 1 : value))
+
+    // const params = start.map((value, i) => value / scale[i])
+
+    // const jac = jacobian(params, example1, scale, linearFunc)
+
+    // console.log("params:", params)
+    // console.table(jac)
+
+    // console.log(residuals(params, example1, scale, linearFunc))
+
+    // console.log(b_least(example1, linearFunc))
+    const re = b_least(example1, linearFunc)
+    console.log(re)
+    present(...re)
 }
