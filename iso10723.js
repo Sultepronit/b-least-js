@@ -1,3 +1,5 @@
+import { calculate_s, calculateAverage } from "./helpers"
+
 const data = [
     {
         name: "nitrogen",
@@ -11,6 +13,20 @@ const data = [
             [37950400, 38013900, 37993800, 37971100, 38019100, 37970800],
             [52667900, 52667100, 52668700, 52704300, 52642400, 52671700],
             [69976000, 69963500, 69954700, 69923000, 69919100, 69917200],
+        ],
+    },
+    {
+        name: "methane",
+        x: [98.4593, 92.3729, 74.293, 85.8019, 80.0742, 69.8271, 63.7423],
+        ux: [0.0108, 0.016, 0.0372, 0.0339, 0.0223, 0.0385, 0.0371],
+        responses: [
+            [465737000, 465398000, 465395000, 465731000, 465908000, 465617000],
+            [439578000, 439264000, 439248000, 439469000, 438906000, 439400000],
+            [358893000, 359013000, 359462000, 359320000, 359150000, 359600000],
+            [410119000, 410530000, 410044000, 410576000, 410405000, 410494000],
+            [384730000, 385486000, 385164000, 385261000, 385469000, 384975000],
+            [339398000, 339473000, 339401000, 339729000, 339289000, 339479000],
+            [312414000, 312471000, 312480000, 312470000, 312440000, 312396000],
         ],
     },
     {
@@ -36,28 +52,11 @@ export function get10723(index) {
     // })
 
     const y = responses.map(e => calculateAverage(e))
-    // const y = corrResp.map(e => calculateAverage(e))
-    // const y = responses.map(e => calculateAverage(e) / 1000)
     return {
         name,
         x,
         ux,
         y,
         uy: responses.map((r, i) => calculate_s(r, y[i])),
-        // uy: corrResp.map((r, i) => calculate_s(r, y[i])),
-        // uy: responses.map((r, i) => calculate_s(r, y[i] * 1000) / 1000),
     }
-}
-
-export function calculateAverage(values) {
-    return values.reduce((acc, val) => acc + Number(val), 0) / values.length
-}
-
-export function calculate_s(values, average) {
-    let sum = 0
-    if (!average) average = calculateAverage(values)
-    for (const val of values) {
-        sum += Math.pow(average - val, 2)
-    }
-    return Math.sqrt(sum / (values.length - 1))
 }

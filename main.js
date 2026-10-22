@@ -1,3 +1,3 @@
-import { test1 } from "./try3.js"
+import { test1 } from "./try4.js"
 
 test1()

@@ -320,7 +320,7 @@ export function test1() {
     // present(...calculate(example2, thirdOrderPoly))
     // console.groupEnd()
 
-    const ex4 = get10723(1)
+    const ex4 = get10723(2)
     const ex4c = { x: ex4.y, ux: ex4.uy, y: ex4.x, uy: ex4.ux }
     // console.log(ex4.name)
     console.log(ex4)
