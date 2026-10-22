@@ -4,7 +4,7 @@ import { levenbergMarquardt } from "ml-levenberg-marquardt"
 import { Matrix, pseudoInverse } from "ml-matrix"
 import { example1, example2 } from "./examples.js"
 import { get10723 } from "./iso10723.js"
-import { getScaleFactor, scaleData } from "./helpers.js"
+import { getScaleFactor } from "./helpers.js"
 
 // def b_linear_func(y, b):
 function linearFunc(y, b) {
@@ -52,7 +52,7 @@ function objectiveFunc(data, y2, b, func) {
     return [...wdx, ...wdy]
 }
 
-// def b_least_start(cal_data, func):
+// def calculate_start(cal_data, func):
 // PART
 function linearStart(data) {
     const n = data.x.length
@@ -193,11 +193,17 @@ function residuals(params, data, scale, func) {
     return objectiveFunc(data, y2, b, func)
 }
 
-// def b_least(cal_data, func):
-function calculate(inputdata, func) {
+function calculate(inputdata, func, useScale = true) {
     // const { scale: yScale, scaled: scaledY } = scaleData(inputdata.y)
-    const yScale = getScaleFactor(inputdata.y)
-    const xScale = getScaleFactor(inputdata.x)
+
+    let xScale = getScaleFactor(inputdata.x)
+    let yScale = getScaleFactor(inputdata.y)
+    // xScale = 1
+    // yScale = 1
+    if (!useScale) {
+        xScale = 1
+        yScale = 1
+    }
     console.log("scales:", xScale, yScale)
     const preparedData = { ...inputdata, x: [], ux: [], y: [], uy: [] }
     // preparedData.y = scaledY
@@ -213,10 +219,11 @@ function calculate(inputdata, func) {
 
     const y2Start = [...preparedData.y]
     const bStart = leastStart(preparedData, func)
-    // console.log(bStart)
 
     const start = [...y2Start, ...bStart]
+
     const scale = start.map(value => (value === 0 ? 1 : value))
+
     const initialValues = start.map((value, i) => value / scale[i])
 
     const indices = Array.from({ length: 2 * n }, (_, i) => i)
@@ -236,26 +243,36 @@ function calculate(inputdata, func) {
         return index => J[index]
     }
 
-    console.log(initialValues)
     const result = levenbergMarquardt(
         { x: indices, y: zeros },
         params => index => model(params)(index),
         {
             initialValues,
             jacobianFunction: params => index => jacobianModel(params)(index),
-            maxIterations: 1000,
+            maxIterations: 100,
+            // errorTolerance: 0.24,
         },
     )
     console.log(result)
-    console.log(scale)
+
     const y2bOpt = result.parameterValues.map((value, i) => value * scale[i])
 
     const bOpt = y2bOpt.slice(n)
     const bOptCov = covariance(result.parameterValues, preparedData, scale, func)
     const bRes = residualsInn(result.parameterValues)
 
+    // console.log(bOptCov)
+    for (let i = 0; i < bOptCov.length; i++) {
+        for (let j = 0; j < bOptCov[i].length; j++) {
+            const factorX = Math.pow(yScale, i + j)
+            bOptCov[i][j] *= Math.pow(xScale, 2) / factorX
+        }
+    }
+
     bOpt[0] *= xScale
     bOpt[1] *= xScale / yScale
+    bOpt[2] *= xScale / yScale ** 2
+    bOpt[3] *= xScale / yScale ** 3
 
     return [bOpt, bOptCov, bRes]
 }
@@ -272,9 +289,12 @@ function present(b, bCov, bRes) {
 
     console.log("Uncertainties u(b)")
     console.log(uncertainties)
+    for (let i = 0; i < b.length; i++) {
+        console.log((uncertainties[i] / b[i]) * 100)
+    }
 
-    console.log("Covariance cov(b)")
-    console.table(bCov)
+    // console.log("Covariance cov(b)")
+    // console.table(bCov)
 
     console.log("Residual")
     console.log(residualSum)
@@ -284,34 +304,34 @@ function present(b, bCov, bRes) {
 }
 
 export function test1() {
-    // const re = b_least(example1, linearFunc)
+    // const re = calculate(example1, linearFunc)
     // console.log(re)
     // present(...re)
 
     // console.group("example 2, linear:")
-    // present(...b_least(example2, linearFunc))
+    // present(...calculate(example2, linearFunc))
     // console.groupEnd()
 
     // console.group("example 2, quadratic:")
-    // present(...b_least(example2, secondOrderPoly))
+    // present(...calculate(example2, secondOrderPoly))
     // console.groupEnd()
 
     // console.group("example 2, cubic:")
-    // present(...b_least(example2, thirdOrderPoly))
+    // present(...calculate(example2, thirdOrderPoly))
     // console.groupEnd()
 
-    const ex4 = get10723(0)
+    const ex4 = get10723(1)
     const ex4c = { x: ex4.y, ux: ex4.uy, y: ex4.x, uy: ex4.ux }
     // console.log(ex4.name)
     console.log(ex4)
 
-    // console.group("ISO 10723, linear a:")
-    // present(...b_least(ex4, linearFunc))
-    // console.groupEnd()
+    console.group("ISO 10723, linear a:")
+    present(...calculate(ex4, linearFunc))
+    console.groupEnd()
 
-    // console.group("ISO 10723, linear c:")
-    // present(...b_least(ex4c, linearFunc))
-    // console.groupEnd()
+    console.group("ISO 10723, linear c:")
+    present(...calculate(ex4c, linearFunc))
+    console.groupEnd()
 
     console.group("ISO 10723, quadratic a:")
     present(...calculate(ex4, secondOrderPoly))
@@ -328,4 +348,8 @@ export function test1() {
     console.group("ISO 10723, cubic c:")
     present(...calculate(ex4c, thirdOrderPoly))
     console.groupEnd()
+
+    // console.group("ISO 10723, cubic c:")
+    // present(...calculate(ex4c, thirdOrderPoly))
+    // console.groupEnd()
 }
