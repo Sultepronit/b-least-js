@@ -48,7 +48,15 @@ export default function useChart() {
         yErr: inputData.uy[i] * 2,
         Ux: inputData.ux[i] * 2,
     }))
-    addToBoth({ label: "y", data: dots, pointStyle: "circle", color: "black", width: 2 })
+    // addToBoth({ label: "y", data: dots, pointStyle: "circle", color: "black", width: 2 })
+    addToBoth({
+        label: "y",
+        data: dots,
+        pointStyle: "rectRot",
+        color: "black",
+        width: 2,
+        radius: 6,
+    })
 
     // for (const sample of expDots) {
     for (let i = 0; i < expDots.length; i++) {
@@ -64,13 +72,13 @@ export default function useChart() {
     }
 
     const fn1 = useFunction(inputData, 1)
-    addToBoth({ label: "fn1", data: fn1, color: "gray", width: 1 })
+    addToBoth({ label: "fn1", data: fn1, color: "green", width: 1 })
 
     const fn2 = useFunction(inputData, 2)
-    addToBoth({ label: "fn2", data: fn2, color: "green", width: 1 })
+    addToBoth({ label: "fn2", data: fn2, color: "blue", width: 1 })
 
     const fn3 = useFunction(inputData, 3)
-    addToBoth({ label: "fn3", data: fn3, color: "blue", width: 1 })
+    addToBoth({ label: "fn3", data: fn3, color: "violet", width: 1 })
 
     const maxUx = Math.max(...inputData.ux) * 2
     const maxUy = Math.max(...inputData.uy) * 2

@@ -47,7 +47,7 @@ const errorBarsPlugin = {
         if (!dataset || !dataset.data) return
 
         ctx.save()
-        ctx.strokeStyle = "#000" // Насичений червоний колір для хрестів
+        ctx.strokeStyle = "orange"
         ctx.lineWidth = 1
 
         // Проходимо по кожній точці циклом
@@ -65,17 +65,17 @@ const errorBarsPlugin = {
                 ctx.lineTo(pixelX, pixelYBottom)
                 ctx.stroke()
 
-                // // 2. Малюємо горизонтальні «вусики» (шапочки) на кінцях
-                // const capSize = 4 // ширина вусиків у пікселях
+                // 2. Малюємо горизонтальні «вусики» (шапочки) на кінцях
+                const capSize = 4 // ширина вусиків у пікселях
 
-                // ctx.beginPath()
-                // // Верхній вусик
-                // ctx.moveTo(pixelX - capSize, pixelYTop)
-                // ctx.lineTo(pixelX + capSize, pixelYTop)
-                // // Нижній вусик
-                // ctx.moveTo(pixelX - capSize, pixelYBottom)
-                // ctx.lineTo(pixelX + capSize, pixelYBottom)
-                // ctx.stroke()
+                ctx.beginPath()
+                // Верхній вусик
+                ctx.moveTo(pixelX - capSize, pixelYTop)
+                ctx.lineTo(pixelX + capSize, pixelYTop)
+                // Нижній вусик
+                ctx.moveTo(pixelX - capSize, pixelYBottom)
+                ctx.lineTo(pixelX + capSize, pixelYBottom)
+                ctx.stroke()
             }
 
             if (pt.Ux) {
@@ -168,8 +168,7 @@ export default function buildChart2(maxUx, maxUy) {
             },
             scales: {
                 x: {
-                    // min: this.data.minX,
-                    // max: this.data.maxX,
+                    max: uxy.x * 2,
                     ticks: {
                         font: {
                             size: 16,
@@ -192,6 +191,7 @@ export default function buildChart2(maxUx, maxUy) {
                     // },
                 },
                 y: {
+                    max: uxy.y * 2,
                     position: "right",
                     ticks: {
                         font: {
@@ -201,9 +201,6 @@ export default function buildChart2(maxUx, maxUy) {
                     },
                 },
             },
-            // onHover: (event, activeElements, chart) => {
-            //     console.log(event)
-            // },
         },
         // plugins: [errorBarsPlugin],
         data: chartData,
