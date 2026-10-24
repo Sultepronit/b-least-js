@@ -11,6 +11,7 @@ import {
     Tooltip,
 } from "chart.js"
 import zoomPlugin from "chartjs-plugin-zoom"
+import { updateZoomedView } from "./chart2"
 
 const chartData = {
     datasets: [],
@@ -117,14 +118,14 @@ const errorBarsPlugin = {
 export default function buildChart() {
     Chart.register(
         ScatterController,
-        LineController,
+        // LineController,
         PointElement,
-        CategoryScale,
+        // CategoryScale,
         LinearScale,
         LineElement,
         Legend,
         Tooltip,
-        Filler,
+        // Filler,
     )
 
     Chart.register(zoomPlugin)
@@ -206,8 +207,26 @@ export default function buildChart() {
                     },
                 },
             },
+            onHover: (event, activeElements, chart) => {
+                if (activeElements.length > 0) {
+                    const element = activeElements[0]
+                    const datasetIndex = element.datasetIndex
+                    const index = element.index
+
+                    // У scatter дані лежать безпосередньо в об'єкті масиву data[index]
+                    const rawPoint = chart.data.datasets[datasetIndex].data[index]
+
+                    // Навіть якщо всередині є зайві поля (невизначеності тощо),
+                    // чисті координати завжди доступні як .x та .y
+                    const pointX = rawPoint.x
+                    const pointY = rawPoint.y
+
+                    // Передаємо чисті координати у зум-функцію
+                    updateZoomedView(pointX, pointY)
+                }
+            },
         },
-        plugins: [errorBarsPlugin],
+        // plugins: [errorBarsPlugin],
         data: chartData,
     })
 }

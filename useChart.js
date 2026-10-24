@@ -1,9 +1,10 @@
 import getFit from "./b-least"
 import buildChart, { addDataset } from "./chart"
+import buildChart2, { addDataset2 } from "./chart2"
 import { get10723 } from "./iso10723"
 
-function useFunction(inputData) {
-    const fitData = getFit(inputData, 3)
+function useFunction(inputData, order) {
+    const fitData = getFit(inputData, order)
     console.log(fitData)
     const args = fitData[0]
     const min = Math.min(...inputData.x) * 0.95
@@ -22,8 +23,13 @@ function useFunction(inputData) {
     return re
 }
 
+function addToBoth(...args) {
+    addDataset(...args)
+    addDataset2(...args)
+}
+
 export default function useChart() {
-    const inputData = get10723(3)
+    const inputData = get10723(0)
     console.log(inputData)
 
     const expDots = []
@@ -42,21 +48,34 @@ export default function useChart() {
         yErr: inputData.uy[i] * 2,
         Ux: inputData.ux[i] * 2,
     }))
-    addDataset({ label: "y", data: dots, pointStyle: "cross", color: "black", width: 2 })
+    addToBoth({ label: "y", data: dots, pointStyle: "circle", color: "black", width: 2 })
 
-    for (const sample of expDots) {
-        addDataset({
-            label: "exp",
-            data: sample,
+    // for (const sample of expDots) {
+    for (let i = 0; i < expDots.length; i++) {
+        // addDataset({
+        addToBoth({
+            label: `y${i + 1}`,
+            data: expDots[i],
             pointStyle: "circle",
             color: "red",
             fill: true,
-            radius: 3,
+            radius: 2,
         })
     }
 
-    const fn = useFunction(inputData)
-    addDataset({ label: "fn", data: fn, color: "gray", width: 3 })
+    const fn1 = useFunction(inputData, 1)
+    addToBoth({ label: "fn1", data: fn1, color: "gray", width: 1 })
+
+    const fn2 = useFunction(inputData, 2)
+    addToBoth({ label: "fn2", data: fn2, color: "green", width: 1 })
+
+    const fn3 = useFunction(inputData, 3)
+    addToBoth({ label: "fn3", data: fn3, color: "blue", width: 1 })
+
+    const maxUx = Math.max(...inputData.ux) * 2
+    const maxUy = Math.max(...inputData.uy) * 2
+    console.log(maxUx, maxUy)
 
     buildChart()
+    buildChart2(maxUx, maxUy)
 }
