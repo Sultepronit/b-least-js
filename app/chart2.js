@@ -51,10 +51,9 @@ const errorBarsPlugin = {
 
         // Проходимо по кожній точці циклом
         dataset.data.forEach(pt => {
-            console.log(pt);
+            // console.log(pt);
             // Перевіряємо, чи взагалі задана похибка для цієї точки
             if (pt.Uy && pt.Ux) {
-                // y!
                 const pixelX = xAxis.getPixelForValue(pt.x);
                 const pixelYTop = yAxis.getPixelForValue(pt.y + pt.Uy);
                 const pixelYBottom = yAxis.getPixelForValue(pt.y - pt.Uy);
@@ -63,17 +62,20 @@ const errorBarsPlugin = {
                 const pixelXLeft = xAxis.getPixelForValue(pt.x - pt.Ux);
                 const pixelXRight = xAxis.getPixelForValue(pt.x + pt.Ux);
 
+                // y!
                 ctx.beginPath();
                 ctx.moveTo(pixelX, pixelYTop);
                 ctx.lineTo(pixelX, pixelYBottom);
                 ctx.stroke();
 
-                const capSize = (pixelY - pixelXLeft) / 3;
+                // const capSizeX = pixelY - pixelXLeft;
+                const capSizeX = (pixelXRight - pixelXLeft) / 10;
+                // console.log(pixelY, pixelXLeft);
                 ctx.beginPath();
-                ctx.moveTo(pixelX - capSize, pixelYTop);
-                ctx.lineTo(pixelX + capSize, pixelYTop);
-                ctx.moveTo(pixelX - capSize, pixelYBottom);
-                ctx.lineTo(pixelX + capSize, pixelYBottom);
+                ctx.moveTo(pixelX - capSizeX, pixelYTop);
+                ctx.lineTo(pixelX + capSizeX, pixelYTop);
+                ctx.moveTo(pixelX - capSizeX, pixelYBottom);
+                ctx.lineTo(pixelX + capSizeX, pixelYBottom);
                 ctx.stroke();
 
                 // x!
@@ -82,12 +84,14 @@ const errorBarsPlugin = {
                 ctx.lineTo(pixelXLeft, pixelY);
                 ctx.stroke();
 
-                const capSizeV = (pixelX - pixelYBottom) / 3;
+                // const capSizeY = pixelX - pixelYBottom;
+                const capSizeY = (pixelYTop - pixelYBottom) / 10;
+                // console.log(pixelX, pixelYBottom);
                 ctx.beginPath();
-                ctx.moveTo(pixelXLeft, pixelY - capSizeV);
-                ctx.lineTo(pixelXLeft, pixelY + capSizeV);
-                ctx.moveTo(pixelXRight, pixelY - capSizeV);
-                ctx.lineTo(pixelXRight, pixelY + capSizeV);
+                ctx.moveTo(pixelXLeft, pixelY - capSizeY);
+                ctx.lineTo(pixelXLeft, pixelY + capSizeY);
+                ctx.moveTo(pixelXRight, pixelY - capSizeY);
+                ctx.lineTo(pixelXRight, pixelY + capSizeY);
                 ctx.stroke();
             }
         });
@@ -191,9 +195,9 @@ export default function buildChart2(maxUx, maxUy) {
                 x: {
                     max: uxy.x * 2,
                     ticks: {
-                        font: {
-                            size: 16,
-                        },
+                        // font: {
+                        //     size: 16,
+                        // },
                     },
                 },
                 y: {

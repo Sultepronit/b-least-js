@@ -222,7 +222,7 @@ function calculate(inputdata, func) {
 
     const y2bOpt = result.parameterValues.map((value, i) => value * scale[i]);
 
-    const x_ = y2bOpt.slice(0, n);
+    const x_ = y2bOpt.slice(0, n).map(v => v * yScale);
     console.log("x^:", x_);
 
     const bOpt = y2bOpt.slice(n);
