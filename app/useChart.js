@@ -40,7 +40,7 @@ function addToBoth(...args) {
 }
 
 export default function useChart() {
-    const inputData = get10723(3);
+    const inputData = get10723(1);
     console.log(inputData);
 
     const expDots = [];

@@ -42,50 +42,52 @@ const errorBarsPlugin = {
         const xAxis = chart.scales.x;
         const yAxis = chart.scales.y;
 
-        // Беремо дані з потрібного нам датасету (наприклад, першого експериментального)
-        const dataset = chart.data.datasets[0];
+        const dataset = chart.data.datasets[6];
         if (!dataset || !dataset.data) return;
 
         ctx.save();
-        ctx.strokeStyle = "orange";
-        ctx.lineWidth = 1;
+        ctx.strokeStyle = "#0005";
+        ctx.lineWidth = 1.5;
 
         // Проходимо по кожній точці циклом
         dataset.data.forEach(pt => {
+            console.log(pt);
             // Перевіряємо, чи взагалі задана похибка для цієї точки
-            if (pt.yErr !== undefined && pt.yErr > 0) {
-                // Переводимо математичні координати у пікселі canvas
+            if (pt.Uy && pt.Ux) {
+                // y!
                 const pixelX = xAxis.getPixelForValue(pt.x);
-                const pixelYTop = yAxis.getPixelForValue(pt.y + pt.yErr);
-                const pixelYBottom = yAxis.getPixelForValue(pt.y - pt.yErr);
+                const pixelYTop = yAxis.getPixelForValue(pt.y + pt.Uy);
+                const pixelYBottom = yAxis.getPixelForValue(pt.y - pt.Uy);
 
-                // 1. Малюємо вертикальну паличку невизначеності
-                ctx.beginPath();
-                ctx.moveTo(pixelX, pixelYTop);
-                ctx.lineTo(pixelX, pixelYBottom);
-                ctx.stroke();
-
-                // 2. Малюємо горизонтальні «вусики» (шапочки) на кінцях
-                const capSize = 4; // ширина вусиків у пікселях
-
-                ctx.beginPath();
-                // Верхній вусик
-                ctx.moveTo(pixelX - capSize, pixelYTop);
-                ctx.lineTo(pixelX + capSize, pixelYTop);
-                // Нижній вусик
-                ctx.moveTo(pixelX - capSize, pixelYBottom);
-                ctx.lineTo(pixelX + capSize, pixelYBottom);
-                ctx.stroke();
-            }
-
-            if (pt.Ux) {
                 const pixelY = yAxis.getPixelForValue(pt.y);
                 const pixelXLeft = xAxis.getPixelForValue(pt.x - pt.Ux);
                 const pixelXRight = xAxis.getPixelForValue(pt.x + pt.Ux);
 
                 ctx.beginPath();
+                ctx.moveTo(pixelX, pixelYTop);
+                ctx.lineTo(pixelX, pixelYBottom);
+                ctx.stroke();
+
+                const capSize = (pixelY - pixelXLeft) / 3;
+                ctx.beginPath();
+                ctx.moveTo(pixelX - capSize, pixelYTop);
+                ctx.lineTo(pixelX + capSize, pixelYTop);
+                ctx.moveTo(pixelX - capSize, pixelYBottom);
+                ctx.lineTo(pixelX + capSize, pixelYBottom);
+                ctx.stroke();
+
+                // x!
+                ctx.beginPath();
                 ctx.moveTo(pixelXRight, pixelY);
                 ctx.lineTo(pixelXLeft, pixelY);
+                ctx.stroke();
+
+                const capSizeV = (pixelX - pixelYBottom) / 3;
+                ctx.beginPath();
+                ctx.moveTo(pixelXLeft, pixelY - capSizeV);
+                ctx.lineTo(pixelXLeft, pixelY + capSizeV);
+                ctx.moveTo(pixelXRight, pixelY - capSizeV);
+                ctx.lineTo(pixelXRight, pixelY + capSizeV);
                 ctx.stroke();
             }
         });
@@ -104,12 +106,24 @@ export function updateZoomedView0(x, y) {
     chart.update("none");
 }
 
-export function updateZoomedView(pointData) {
+export function updateZoomedView1(pointData) {
     chart.options.scales.x.min = pointData.x - pointData.Ux;
     chart.options.scales.x.max = pointData.x + pointData.Ux;
 
     chart.options.scales.y.min = pointData.y - pointData.Uy;
     chart.options.scales.y.max = pointData.y + pointData.Uy;
+
+    chart.update("none");
+}
+
+export function updateZoomedView(pointData) {
+    const Ux = pointData.Ux ?? uxy.x;
+    chart.options.scales.x.min = pointData.x - Ux;
+    chart.options.scales.x.max = pointData.x + Ux;
+
+    const Uy = pointData.Uy ?? uxy.y;
+    chart.options.scales.y.min = pointData.y - Uy;
+    chart.options.scales.y.max = pointData.y + Uy;
 
     chart.update("none");
 }
@@ -200,7 +214,7 @@ export default function buildChart2(maxUx, maxUy) {
                 },
             },
         },
-        // plugins: [errorBarsPlugin],
+        plugins: [errorBarsPlugin],
         data: chartData,
     });
 }

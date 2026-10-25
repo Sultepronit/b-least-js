@@ -187,18 +187,19 @@ export default function buildChart() {
                     // const element = activeElements[0];
                     // console.log(activeElements);
                     const di = 6;
-                    const element = activeElements.find(e => e.datasetIndex === di);
-                    console.log(element);
-                    if (!element) return;
-                    // const datasetIndex = element.datasetIndex;
+                    const element =
+                        activeElements.find(e => e.datasetIndex === di) || activeElements[0];
+                    // console.log(element);
+                    // if (!element) return;
+                    const datasetIndex = element.datasetIndex;
                     const index = element.index;
 
-                    // const rawPoint = chart.data.datasets[datasetIndex].data[index];
-                    const pointData = chart.data.datasets[di].data[index];
-                    console.log(pointData);
+                    const pointData = chart.data.datasets[datasetIndex].data[index];
+                    // const pointData = chart.data.datasets[di].data[index];
+                    // console.log(pointData);
 
-                    const pointX = pointData.x;
-                    const pointY = pointData.y;
+                    // const pointX = pointData.x;
+                    // const pointY = pointData.y;
 
                     // updateZoomedView(pointX, pointY);
                     updateZoomedView(pointData);
