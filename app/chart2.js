@@ -9,17 +9,17 @@ import {
     PointElement,
     ScatterController,
     Tooltip,
-} from "chart.js"
+} from "chart.js";
 
 const chartData = {
     datasets: [],
-}
-const canvas = document.getElementById("chart-2")
-let chart = null
-const uxy = {}
+};
+const canvas = document.getElementById("chart-2");
+let chart = null;
+const uxy = {};
 
 export function addDataset2({ label, data, pointStyle, width, color, fill = false, radius = 5 }) {
-    console.log(chartData)
+    console.log(chartData);
     chartData.datasets.push({
         label,
         data,
@@ -32,84 +32,91 @@ export function addDataset2({ label, data, pointStyle, width, color, fill = fals
         pointBorderWidth: width || 1,
         pointBackgroundColor: fill ? color : "#ffffff00",
         showLine: !pointStyle,
-    })
+    });
 }
 
 const errorBarsPlugin = {
     id: "errorBars",
     afterDraw(chart) {
-        const ctx = chart.ctx
-        const xAxis = chart.scales.x
-        const yAxis = chart.scales.y
+        const ctx = chart.ctx;
+        const xAxis = chart.scales.x;
+        const yAxis = chart.scales.y;
 
         // Беремо дані з потрібного нам датасету (наприклад, першого експериментального)
-        const dataset = chart.data.datasets[0]
-        if (!dataset || !dataset.data) return
+        const dataset = chart.data.datasets[0];
+        if (!dataset || !dataset.data) return;
 
-        ctx.save()
-        ctx.strokeStyle = "orange"
-        ctx.lineWidth = 1
+        ctx.save();
+        ctx.strokeStyle = "orange";
+        ctx.lineWidth = 1;
 
         // Проходимо по кожній точці циклом
         dataset.data.forEach(pt => {
             // Перевіряємо, чи взагалі задана похибка для цієї точки
             if (pt.yErr !== undefined && pt.yErr > 0) {
                 // Переводимо математичні координати у пікселі canvas
-                const pixelX = xAxis.getPixelForValue(pt.x)
-                const pixelYTop = yAxis.getPixelForValue(pt.y + pt.yErr)
-                const pixelYBottom = yAxis.getPixelForValue(pt.y - pt.yErr)
+                const pixelX = xAxis.getPixelForValue(pt.x);
+                const pixelYTop = yAxis.getPixelForValue(pt.y + pt.yErr);
+                const pixelYBottom = yAxis.getPixelForValue(pt.y - pt.yErr);
 
                 // 1. Малюємо вертикальну паличку невизначеності
-                ctx.beginPath()
-                ctx.moveTo(pixelX, pixelYTop)
-                ctx.lineTo(pixelX, pixelYBottom)
-                ctx.stroke()
+                ctx.beginPath();
+                ctx.moveTo(pixelX, pixelYTop);
+                ctx.lineTo(pixelX, pixelYBottom);
+                ctx.stroke();
 
                 // 2. Малюємо горизонтальні «вусики» (шапочки) на кінцях
-                const capSize = 4 // ширина вусиків у пікселях
+                const capSize = 4; // ширина вусиків у пікселях
 
-                ctx.beginPath()
+                ctx.beginPath();
                 // Верхній вусик
-                ctx.moveTo(pixelX - capSize, pixelYTop)
-                ctx.lineTo(pixelX + capSize, pixelYTop)
+                ctx.moveTo(pixelX - capSize, pixelYTop);
+                ctx.lineTo(pixelX + capSize, pixelYTop);
                 // Нижній вусик
-                ctx.moveTo(pixelX - capSize, pixelYBottom)
-                ctx.lineTo(pixelX + capSize, pixelYBottom)
-                ctx.stroke()
+                ctx.moveTo(pixelX - capSize, pixelYBottom);
+                ctx.lineTo(pixelX + capSize, pixelYBottom);
+                ctx.stroke();
             }
 
             if (pt.Ux) {
-                const pixelY = yAxis.getPixelForValue(pt.y)
-                const pixelXLeft = xAxis.getPixelForValue(pt.x - pt.Ux)
-                const pixelXRight = xAxis.getPixelForValue(pt.x + pt.Ux)
+                const pixelY = yAxis.getPixelForValue(pt.y);
+                const pixelXLeft = xAxis.getPixelForValue(pt.x - pt.Ux);
+                const pixelXRight = xAxis.getPixelForValue(pt.x + pt.Ux);
 
-                ctx.beginPath()
-                ctx.moveTo(pixelXRight, pixelY)
-                ctx.lineTo(pixelXLeft, pixelY)
-                ctx.stroke()
+                ctx.beginPath();
+                ctx.moveTo(pixelXRight, pixelY);
+                ctx.lineTo(pixelXLeft, pixelY);
+                ctx.stroke();
             }
-        })
+        });
 
-        ctx.restore()
+        ctx.restore();
     },
+};
+
+export function updateZoomedView0(x, y) {
+    chart.options.scales.x.min = x - uxy.x;
+    chart.options.scales.x.max = x + uxy.x;
+
+    chart.options.scales.y.min = y - uxy.y;
+    chart.options.scales.y.max = y + uxy.y;
+
+    chart.update("none");
 }
 
-export function updateZoomedView(x, y) {
-    // Тут задаємо локальне вікно навколо знайденої точки (наприклад, ±0.05 по осі X)
-    chart.options.scales.x.min = x - uxy.x
-    chart.options.scales.x.max = x + uxy.x
+export function updateZoomedView(pointData) {
+    chart.options.scales.x.min = pointData.x - pointData.Ux;
+    chart.options.scales.x.max = pointData.x + pointData.Ux;
 
-    // Можна також точково підлаштувати вісь Y під значення у цій точці
-    chart.options.scales.y.min = y - uxy.y
-    chart.options.scales.y.max = y + uxy.y
-    // console.log(x, y)
-    // Перемальовуємо допоміжний графік без лагів
-    chart.update("none")
+    chart.options.scales.y.min = pointData.y - pointData.Uy;
+    chart.options.scales.y.max = pointData.y + pointData.Uy;
+
+    chart.update("none");
 }
 
 export default function buildChart2(maxUx, maxUy) {
-    uxy.x = maxUx
-    uxy.y = maxUy
+    uxy.x = maxUx;
+    uxy.y = maxUy;
     Chart.register(
         ScatterController,
         LineController,
@@ -120,7 +127,7 @@ export default function buildChart2(maxUx, maxUy) {
         Legend,
         Tooltip,
         Filler,
-    )
+    );
 
     // Chart.register(zoomPlugin)
 
@@ -185,9 +192,9 @@ export default function buildChart2(maxUx, maxUy) {
                         // maxTicksLimit: 20,
                         callback: function (value) {
                             if (Math.abs(value) > 1000) {
-                                return value.toExponential(3)
+                                return value.toExponential(3);
                             }
-                            return value.toLocaleString()
+                            return value.toLocaleString();
                         },
                     },
                 },
@@ -195,5 +202,5 @@ export default function buildChart2(maxUx, maxUy) {
         },
         // plugins: [errorBarsPlugin],
         data: chartData,
-    })
+    });
 }
