@@ -105,7 +105,7 @@ export default function useChart() {
     });
 
     const fn3 = useFunction(inputData, 3);
-    addToBoth({ label: "fn3", data: fn3.line, color: "purple", width: 1 });
+    addToBoth({ label: "fn3", data: fn3.line, color: "purple", width: 2 });
     addToBoth({
         label: "fn3",
         data: fn3.corr,

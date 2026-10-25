@@ -37,7 +37,8 @@ export function addDataset2({ label, data, pointStyle, width, color, fill = fals
 
 const errorBarsPlugin = {
     id: "errorBars",
-    afterDraw(chart) {
+    // afterDraw(chart) {
+    beforeDatasetsDraw(chart) {
         const ctx = chart.ctx;
         const xAxis = chart.scales.x;
         const yAxis = chart.scales.y;
@@ -46,8 +47,10 @@ const errorBarsPlugin = {
         if (!dataset || !dataset.data) return;
 
         ctx.save();
-        ctx.strokeStyle = "#0005";
-        ctx.lineWidth = 1.5;
+        // ctx.strokeStyle = "#0005";
+        // ctx.lineWidth = 1.5;
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 1;
 
         // Проходимо по кожній точці циклом
         dataset.data.forEach(pt => {
@@ -195,9 +198,9 @@ export default function buildChart2(maxUx, maxUy) {
                 x: {
                     max: uxy.x * 2,
                     ticks: {
-                        // font: {
-                        //     size: 16,
-                        // },
+                        font: {
+                            size: 16,
+                        },
                     },
                 },
                 y: {
