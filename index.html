@@ -2,29 +2,20 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="icon.svg" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>b least 0!</title>
+        <title>GLS</title>
         <script type="module" src="main.js"></script>
     </head>
     <body>
         <!-- <h1>GLS!</h1> -->
-        <div
-            class="add-chart"
-            style="
-                position: absolute;
-                height: 40dvh;
-                width: 40%;
-                background-color: white;
-                z-index: 10;
-            "
-        >
-            <canvas id="chart-2"></canvas>
-        </div>
-        <div
-            id="chart-container"
-            style="position: relative; max-height: 90dvh; height: 800px; width: 100%"
-        >
-            <canvas id="chart"></canvas>
+        <div class="charts">
+            <div class="add-chart">
+                <canvas id="chart-2"></canvas>
+            </div>
+            <div class="main-chart">
+                <canvas id="chart"></canvas>
+            </div>
         </div>
     </body>
 </html>

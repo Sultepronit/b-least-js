@@ -173,31 +173,22 @@ export default function buildChart2(maxUx, maxUy) {
                         font: {
                             size: 16,
                         },
-                        // callback(val, index): string {
-                        //     // const date = this.getLabelForValue(index)
-                        //     const date = this.getLabelForValue(Number(val))
-                        //     // console.log(val, index, date)
-                        //     const [y, m, d] = date.split("-")
-                        //     if (d === "11" || d === "21") return ""
-                        //     if (d === "01")
-                        //         return m === "01" ? y : formatUkDate(date, true, true)
-                        //     return null
-                        // },
                     },
-                    // grid: {
-                    //     color(context) {
-                    //         return context.tick.label ? "#000" : "#0000003e"
-                    //     },
-                    // },
                 },
                 y: {
                     max: uxy.y * 2,
-                    position: "right",
+                    position: "left",
                     ticks: {
                         font: {
                             size: 16,
                         },
-                        maxTicksLimit: 20,
+                        // maxTicksLimit: 20,
+                        callback: function (value) {
+                            if (Math.abs(value) > 1000) {
+                                return value.toExponential(3)
+                            }
+                            return value.toLocaleString()
+                        },
                     },
                 },
             },

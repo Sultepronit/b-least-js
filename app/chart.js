@@ -19,23 +19,6 @@ const chartData = {
 const canvas = document.getElementById("chart")
 let chart = null
 
-// export function addLine(label, inputData, borderWidth, borderColor, backgroundColor) {
-//     console.log(chartData)
-//     chartData.datasets.push({
-//         label,
-//         data: inputData,
-//         borderWidth,
-//         borderColor,
-//         // fill: !!backgroundColor,
-//         // backgroundColor: backgroundColor || "white",
-//         pointStyle: "rectRot",
-//         pointRadius: 5,
-//         pointBorderWidth: 1,
-//         pointBackgroundColor: "#ffffff00",
-//         showLine: true,
-//     })
-// }
-
 export function addDataset({ label, data, pointStyle, width, color, fill = false, radius = 5 }) {
     console.log(chartData)
     chartData.datasets.push({
@@ -159,18 +142,18 @@ export default function buildChart() {
                     //     },
                     // },
                 },
-                zoom: {
-                    pan: {
-                        enabled: true,
-                        mode: "xy",
-                        modifierKey: null,
-                        threshold: 10,
-                    },
-                    zoom: {
-                        wheel: { enabled: true },
-                        pinch: { enabled: true },
-                    },
-                },
+                // zoom: {
+                //     pan: {
+                //         enabled: true,
+                //         mode: "xy",
+                //         modifierKey: null,
+                //         threshold: 10,
+                //     },
+                //     zoom: {
+                //         wheel: { enabled: true },
+                //         pinch: { enabled: true },
+                //     },
+                // },
             },
             scales: {
                 x: {
@@ -180,30 +163,22 @@ export default function buildChart() {
                         font: {
                             size: 16,
                         },
-                        // callback(val, index): string {
-                        //     // const date = this.getLabelForValue(index)
-                        //     const date = this.getLabelForValue(Number(val))
-                        //     // console.log(val, index, date)
-                        //     const [y, m, d] = date.split("-")
-                        //     if (d === "11" || d === "21") return ""
-                        //     if (d === "01")
-                        //         return m === "01" ? y : formatUkDate(date, true, true)
-                        //     return null
-                        // },
+                        maxTicksLimit: 20,
                     },
-                    // grid: {
-                    //     color(context) {
-                    //         return context.tick.label ? "#000" : "#0000003e"
-                    //     },
-                    // },
                 },
                 y: {
-                    position: "right",
+                    position: "left",
                     ticks: {
                         font: {
                             size: 16,
                         },
                         maxTicksLimit: 20,
+                        callback: function (value) {
+                            if (Math.abs(value) > 1000) {
+                                return value.toExponential(2)
+                            }
+                            return value.toLocaleString()
+                        },
                     },
                 },
             },
@@ -221,7 +196,6 @@ export default function buildChart() {
                     const pointX = rawPoint.x
                     const pointY = rawPoint.y
 
-                    // Передаємо чисті координати у зум-функцію
                     updateZoomedView(pointX, pointY)
                 }
             },

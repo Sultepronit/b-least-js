@@ -7,12 +7,16 @@ function useFunction(inputData, order) {
     const fitData = getFit(inputData, order)
     console.log(fitData)
     const args = fitData[0]
-    const min = Math.min(...inputData.x) * 0.95
-    const max = Math.max(...inputData.x) * 1.05
+    const maxX = Math.max(...inputData.x)
+    let min = Math.min(...inputData.x) - maxX * 0.02
+    if (min < 0) min = 0
+    let max = maxX * 1.02
+    if (max > 100) max = 100
+
     const steps = 100
     const step = (max - min) / steps
     const re = []
-    for (let i = 0; i < steps; i++) {
+    for (let i = 0; i <= steps; i++) {
         const x = min + i * step
         re.push({
             x,
@@ -29,7 +33,7 @@ function addToBoth(...args) {
 }
 
 export default function useChart() {
-    const inputData = get10723(0)
+    const inputData = get10723(3)
     console.log(inputData)
 
     const expDots = []
@@ -52,10 +56,10 @@ export default function useChart() {
     addToBoth({
         label: "y",
         data: dots,
-        pointStyle: "rectRot",
+        pointStyle: "circle",
         color: "black",
         width: 2,
-        radius: 6,
+        // radius: 6,
     })
 
     // for (const sample of expDots) {
@@ -78,7 +82,7 @@ export default function useChart() {
     addToBoth({ label: "fn2", data: fn2, color: "blue", width: 1 })
 
     const fn3 = useFunction(inputData, 3)
-    addToBoth({ label: "fn3", data: fn3, color: "violet", width: 1 })
+    addToBoth({ label: "fn3", data: fn3, color: "purple", width: 1 })
 
     const maxUx = Math.max(...inputData.ux) * 2
     const maxUy = Math.max(...inputData.uy) * 2
