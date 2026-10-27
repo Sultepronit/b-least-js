@@ -19,7 +19,7 @@ let chart = null;
 const uxy = {};
 
 export function addDataset2({ label, data, pointStyle, width, color, fill = false, radius = 5 }) {
-    console.log(chartData);
+    // console.log(chartData);
     chartData.datasets.push({
         label,
         data,
@@ -35,6 +35,20 @@ export function addDataset2({ label, data, pointStyle, width, color, fill = fals
     });
 }
 
+export function updateChart2({ fns, expDots, y, maxU }) {
+    chart.data.datasets[0].data = fns[0].line;
+    chart.data.datasets[1].data = fns[0].corr;
+    chart.data.datasets[2].data = fns[1].line;
+    chart.data.datasets[3].data = fns[1].corr;
+    chart.data.datasets[4].data = fns[2].line;
+    chart.data.datasets[5].data = fns[2].corr;
+    for (let i = 0; i < expDots.length; i++) {
+        chart.data.datasets[6 + i].data = expDots[i];
+    }
+    chart.data.datasets[12].data = y;
+    chart.update();
+}
+
 const errorBarsPlugin = {
     id: "errorBars",
     // afterDraw(chart) {
@@ -43,7 +57,7 @@ const errorBarsPlugin = {
         const xAxis = chart.scales.x;
         const yAxis = chart.scales.y;
 
-        const dataset = chart.data.datasets[6];
+        const dataset = chart.data.datasets[12];
         if (!dataset || !dataset.data) return;
 
         ctx.save();
@@ -196,7 +210,7 @@ export default function buildChart2(maxUx, maxUy) {
             },
             scales: {
                 x: {
-                    max: uxy.x * 2,
+                    max: uxy.x * 20,
                     ticks: {
                         font: {
                             size: 16,
@@ -204,7 +218,7 @@ export default function buildChart2(maxUx, maxUy) {
                     },
                 },
                 y: {
-                    max: uxy.y * 2,
+                    max: uxy.y * 20,
                     position: "left",
                     ticks: {
                         font: {

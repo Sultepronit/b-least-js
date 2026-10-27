@@ -20,7 +20,7 @@ const canvas = document.getElementById("chart");
 let chart = null;
 
 export function addDataset({ label, data, pointStyle, width, color, fill = false, radius = 5 }) {
-    console.log(chartData);
+    // console.log(chartData);
     chartData.datasets.push({
         label,
         data,
@@ -36,67 +36,19 @@ export function addDataset({ label, data, pointStyle, width, color, fill = false
     });
 }
 
-const errorBarsPlugin = {
-    id: "errorBars",
-    afterDraw(chart) {
-        const ctx = chart.ctx;
-        const xAxis = chart.scales.x;
-        const yAxis = chart.scales.y;
-
-        // Беремо дані з потрібного нам датасету (наприклад, першого експериментального)
-        const dataset = chart.data.datasets[0];
-        if (!dataset || !dataset.data) return;
-
-        ctx.save();
-        ctx.strokeStyle = "#000"; // Насичений червоний колір для хрестів
-        ctx.lineWidth = 1;
-
-        // Проходимо по кожній точці циклом
-        dataset.data.forEach(pt => {
-            // Перевіряємо, чи взагалі задана похибка для цієї точки
-            if (pt.yErr !== undefined && pt.yErr > 0) {
-                // Переводимо математичні координати у пікселі canvas
-                const pixelX = xAxis.getPixelForValue(pt.x);
-                const pixelYTop = yAxis.getPixelForValue(pt.y + pt.yErr);
-                const pixelYBottom = yAxis.getPixelForValue(pt.y - pt.yErr);
-
-                // 1. Малюємо вертикальну паличку невизначеності
-                ctx.beginPath();
-                ctx.moveTo(pixelX, pixelYTop);
-                ctx.lineTo(pixelX, pixelYBottom);
-                ctx.stroke();
-
-                // // 2. Малюємо горизонтальні «вусики» (шапочки) на кінцях
-                // const capSize = 4 // ширина вусиків у пікселях
-
-                // ctx.beginPath()
-                // // Верхній вусик
-                // ctx.moveTo(pixelX - capSize, pixelYTop)
-                // ctx.lineTo(pixelX + capSize, pixelYTop)
-                // // Нижній вусик
-                // ctx.moveTo(pixelX - capSize, pixelYBottom)
-                // ctx.lineTo(pixelX + capSize, pixelYBottom)
-                // ctx.stroke()
-            }
-
-            if (pt.Ux) {
-                const pixelY = yAxis.getPixelForValue(pt.y);
-                const pixelXLeft = xAxis.getPixelForValue(pt.x - pt.Ux);
-                const pixelXRight = xAxis.getPixelForValue(pt.x + pt.Ux);
-
-                ctx.beginPath();
-                ctx.moveTo(pixelXRight, pixelY);
-                ctx.lineTo(pixelXLeft, pixelY);
-                ctx.stroke();
-            }
-        });
-
-        ctx.restore();
-    },
-};
-
-// І просто передаємо цей плагін у конфігурацію chart:
-// plugins: [errorBarsPlugin]
+export function updateChart({ fns, expDots, y, maxU }) {
+    chart.data.datasets[0].data = fns[0].line;
+    chart.data.datasets[1].data = fns[0].corr;
+    chart.data.datasets[2].data = fns[1].line;
+    chart.data.datasets[3].data = fns[1].corr;
+    chart.data.datasets[4].data = fns[2].line;
+    chart.data.datasets[5].data = fns[2].corr;
+    for (let i = 0; i < expDots.length; i++) {
+        chart.data.datasets[6 + i].data = expDots[i];
+    }
+    chart.data.datasets[12].data = y;
+    chart.update();
+}
 
 export default function buildChart() {
     Chart.register(
@@ -186,7 +138,7 @@ export default function buildChart() {
                 if (activeElements.length > 0) {
                     // const element = activeElements[0];
                     // console.log(activeElements);
-                    const di = 6;
+                    const di = 12;
                     const element =
                         activeElements.find(e => e.datasetIndex === di) || activeElements[0];
                     // console.log(element);
@@ -209,4 +161,6 @@ export default function buildChart() {
         // plugins: [errorBarsPlugin],
         data: chartData,
     });
+
+    console.log(chart.data);
 }

@@ -40,8 +40,41 @@ function addToBoth(...args) {
 }
 
 export default function useChart() {
-    const inputData = get10723(2);
+    const inputData = get10723(0);
     console.log(inputData);
+
+    const fn1 = useFunction(inputData, 1);
+    addToBoth({ label: "fn1", data: fn1.line, color: "green", width: 1 });
+    addToBoth({
+        label: "fn1",
+        data: fn1.corr,
+        pointStyle: "crossRot",
+        color: "green",
+        width: 2,
+        radius: 5,
+    });
+
+    const fn2 = useFunction(inputData, 2);
+    addToBoth({ label: "fn2", data: fn2.line, color: "blue", width: 1 });
+    addToBoth({
+        label: "fn2",
+        data: fn2.corr,
+        pointStyle: "crossRot",
+        color: "blue",
+        width: 2,
+        radius: 5,
+    });
+
+    const fn3 = useFunction(inputData, 3);
+    addToBoth({ label: "fn3", data: fn3.line, color: "purple", width: 1 });
+    addToBoth({
+        label: "fn3",
+        data: fn3.corr,
+        pointStyle: "crossRot",
+        color: "purple",
+        width: 2,
+        radius: 5,
+    });
 
     const expDots = [];
     for (let i = 0; i < inputData.x.length; i++) {
@@ -80,39 +113,6 @@ export default function useChart() {
         // radius: 6,
         fill: true,
         radius: 3,
-    });
-
-    const fn1 = useFunction(inputData, 1);
-    addToBoth({ label: "fn1", data: fn1.line, color: "green", width: 1 });
-    addToBoth({
-        label: "fn1",
-        data: fn1.corr,
-        pointStyle: "crossRot",
-        color: "green",
-        width: 2,
-        radius: 5,
-    });
-
-    const fn2 = useFunction(inputData, 2);
-    addToBoth({ label: "fn2", data: fn2.line, color: "blue", width: 1 });
-    addToBoth({
-        label: "fn2",
-        data: fn2.corr,
-        pointStyle: "crossRot",
-        color: "blue",
-        width: 2,
-        radius: 5,
-    });
-
-    const fn3 = useFunction(inputData, 3);
-    addToBoth({ label: "fn3", data: fn3.line, color: "purple", width: 2 });
-    addToBoth({
-        label: "fn3",
-        data: fn3.corr,
-        pointStyle: "crossRot",
-        color: "purple",
-        width: 2,
-        radius: 5,
     });
 
     const maxUx = Math.max(...inputData.ux) * 2;
