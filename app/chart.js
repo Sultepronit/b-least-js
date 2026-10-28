@@ -1,7 +1,8 @@
 import { Chart } from "chart.js";
 
-import { updateZoomedView } from "./chart2";
+// import { updateZoomedView } from "./chart2";
 import ChartBase from "./chartBase";
+import zoomChart from "./chart2";
 
 class MainChart extends ChartBase {
     constructor() {
@@ -10,9 +11,9 @@ class MainChart extends ChartBase {
     }
 
     build() {
-        const data = this.data;
-        const canvas = this.canvas;
-        this.chart = new Chart(canvas, {
+        // const data = this.data;
+        // const canvas = this.canvas;
+        this.chart = new Chart(this.canvas, {
             type: "scatter",
             options: {
                 responsive: true,
@@ -101,12 +102,11 @@ class MainChart extends ChartBase {
                         // const pointY = pointData.y;
 
                         // updateZoomedView(pointX, pointY);
-                        updateZoomedView(pointData);
+                        zoomChart.updateZoomedView(pointData);
                     }
                 },
             },
-            // plugins: [errorBarsPlugin],
-            data,
+            data: this.data,
         });
 
         console.log(chart.data);

@@ -1,22 +1,24 @@
 // import buildChart, { addDataset } from "./chart";
 import mainChart from "./chart";
-import buildChart2, { addDataset2 } from "./chart2";
+import zoomChart from "./chart2";
+// import buildChart2, { addDataset2 } from "./chart2";
 import prepareChartData from "./prepareChartData";
 
 function addToBoth(...args) {
     mainChart.addDataset(...args);
-    addDataset2(...args);
+    // addDataset2(...args);
+    zoomChart.addDataset(...args);
 }
 
 export default function buildCharts() {
     const { fns, expDots, y, maxU } = prepareChartData(0);
 
-    addToBoth({ label: "fn1", data: fns[0].line, color: "green", width: 1 });
+    addToBoth({ label: "fn3", data: fns[2].line, color: "purple", width: 1 });
     addToBoth({
-        label: "fn1",
-        data: fns[0].corr,
+        label: "fn3",
+        data: fns[2].corr,
         pointStyle: "crossRot",
-        color: "green",
+        color: "purple",
         width: 2,
         radius: 5,
     });
@@ -31,12 +33,12 @@ export default function buildCharts() {
         radius: 5,
     });
 
-    addToBoth({ label: "fn3", data: fns[2].line, color: "purple", width: 1 });
+    addToBoth({ label: "fn1", data: fns[0].line, color: "green", width: 1 });
     addToBoth({
-        label: "fn3",
-        data: fns[2].corr,
+        label: "fn1",
+        data: fns[0].corr,
         pointStyle: "crossRot",
-        color: "purple",
+        color: "green",
         width: 2,
         radius: 5,
     });
@@ -64,5 +66,6 @@ export default function buildCharts() {
     });
 
     mainChart.build();
-    buildChart2(maxU.x, maxU.y);
+    // buildChart2(maxU.x, maxU.y);
+    zoomChart.build(maxU.x, maxU.y);
 }
