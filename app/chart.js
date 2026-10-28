@@ -108,8 +108,6 @@ class MainChart extends ChartBase {
             },
             data: this.data,
         });
-
-        console.log(chart.data);
     }
 }
 

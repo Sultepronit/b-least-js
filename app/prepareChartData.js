@@ -1,4 +1,5 @@
 import getFit from "./b-least";
+import fillResultsTable from "./fillResultsTable";
 import { get10723 } from "./iso10723";
 
 function fn(args, x) {
@@ -8,8 +9,11 @@ function fn(args, x) {
 function presentFn(inputData, order) {
     const fitData = getFit(inputData, order);
     console.log(fitData);
-    const args = fitData[0];
-    const x_ = fitData[3];
+
+    fillResultsTable(fitData);
+
+    const args = fitData.a;
+    const x_ = fitData.x_;
     const maxX = Math.max(...inputData.x);
     let min = Math.min(...inputData.x) - maxX * 0.02;
     if (min < 0) min = 0;

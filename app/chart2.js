@@ -1,60 +1,8 @@
 import { Chart } from "chart.js";
 import ChartBase from "./chartBase";
-// import {
-//     CategoryScale,
-//     Chart,
-//     Filler,
-//     Legend,
-//     LinearScale,
-//     LineController,
-//     LineElement,
-//     PointElement,
-//     ScatterController,
-//     Tooltip,
-// } from "chart.js";
-// import zoomPlugin from "chartjs-plugin-zoom";
-
-// const chartData = {
-//     datasets: [],
-// };
-// const canvas = document.getElementById("chart-2");
-// let chart = null;
-// const uxy = {};
-
-// export function addDataset2({ label, data, pointStyle, width, color, fill = false, radius = 5 }) {
-//     // console.log(chartData);
-//     chartData.datasets.push({
-//         label,
-//         data,
-//         borderWidth: width,
-//         borderColor: color,
-//         // fill: !!backgroundColor,
-//         backgroundColor: "white",
-//         pointStyle: pointStyle,
-//         pointRadius: pointStyle ? radius : 0,
-//         pointBorderWidth: width || 1,
-//         pointBackgroundColor: fill ? color : "#ffffff00",
-//         showLine: !pointStyle,
-//     });
-// }
-
-// export function updateChart2({ fns, expDots, y, maxU }) {
-//     chart.data.datasets[0].data = fns[0].line;
-//     chart.data.datasets[1].data = fns[0].corr;
-//     chart.data.datasets[2].data = fns[1].line;
-//     chart.data.datasets[3].data = fns[1].corr;
-//     chart.data.datasets[4].data = fns[2].line;
-//     chart.data.datasets[5].data = fns[2].corr;
-//     for (let i = 0; i < expDots.length; i++) {
-//         chart.data.datasets[6 + i].data = expDots[i];
-//     }
-//     chart.data.datasets[12].data = y;
-//     chart.update();
-// }
 
 const errorBarsPlugin = {
     id: "errorBars",
-    // afterDraw(chart) {
     beforeDatasetsDraw(chart) {
         const ctx = chart.ctx;
         const xAxis = chart.scales.x;
@@ -64,15 +12,11 @@ const errorBarsPlugin = {
         if (!dataset || !dataset.data) return;
 
         ctx.save();
-        // ctx.strokeStyle = "#0005";
-        // ctx.lineWidth = 1.5;
         ctx.strokeStyle = "black";
         ctx.lineWidth = 1;
 
         // Проходимо по кожній точці циклом
         dataset.data.forEach(pt => {
-            // console.log(pt);
-            // Перевіряємо, чи взагалі задана похибка для цієї точки
             if (pt.Uy && pt.Ux) {
                 const pixelX = xAxis.getPixelForValue(pt.x);
                 const pixelYTop = yAxis.getPixelForValue(pt.y + pt.Uy);

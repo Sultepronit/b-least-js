@@ -71,7 +71,6 @@ function jacobian(params, data, scale, func) {
     const n = data.x.length;
     const nb = scale.length - n;
 
-    // Повертаємо параметри до їхнього справжнього масштабу.
     const actual = params.map((value, i) => value * scale[i]);
 
     const y2 = actual.slice(0, n);
@@ -83,23 +82,19 @@ function jacobian(params, data, scale, func) {
     const uy = data.uy;
     const ux = data.ux;
 
-    // Очікуємо: [x2, dx2/dy2, dx2/db].
     const f = func(y2, b);
     const dx2dy2 = f[1];
     const dx2db = f[2];
 
-    // Матриця 2n × (n + nb), заповнена нулями.
     const jacobi = Array.from({ length: 2 * n }, () => Array(n + nb).fill(0));
 
     for (let i = 0; i < n; i++) {
-        // Залишок за x.
         jacobi[i][i] = (dx2dy2[i] * y2Scale[i]) / ux[i];
 
         for (let j = 0; j < nb; j++) {
             jacobi[i][n + j] = (dx2db[j][i] * bScale[j]) / ux[i];
         }
 
-        // Залишок за y.
         jacobi[n + i][i] = y2Scale[i] / uy[i];
     }
 
@@ -123,7 +118,6 @@ function covariance(params, data, scale, func) {
 
     const J = new Matrix(jacobian(params, data, scale, func));
 
-    // Узгоджуємо поріг із NumPy pinv за замовчуванням.
     const maxDim = Math.max(J.rows, J.columns);
     const JPinv = pseudoInverse(J, 1e-15 / maxDim).to2DArray();
 
@@ -145,7 +139,7 @@ function residuals(params, data, scale, func) {
     return objectiveFunc(data, y2, b, func);
 }
 
-function calculate(inputdata, func) {
+function prepareInput(inputdata) {
     // x & y exchange to return to common sense!
     let xScale = getScaleFactor(inputdata.y);
     let yScale = getScaleFactor(inputdata.x);
@@ -159,7 +153,13 @@ function calculate(inputdata, func) {
         preparedData.x[i] = inputdata.y[i] / xScale;
         preparedData.ux[i] = inputdata.uy[i] / xScale;
     }
-    // console.log(preparedData)
+
+    return { preparedData, xScale, yScale };
+}
+
+function calculate(inputdata, func) {
+    const { preparedData, xScale, yScale } = prepareInput(inputdata);
+    // console.log(preparedData);
 
     const n = preparedData.x.length;
 
@@ -193,23 +193,18 @@ function calculate(inputdata, func) {
     let params = initialValues;
     let prevErr = Infinity;
     const it = 2;
-    // console.time("c")
+
     for (let i = 0; i < 100; i++) {
-        // const result = levenbergMarquardt(
         result = levenbergMarquardt(
             { x: indices, y: zeros },
             params => index => model(params)(index),
             {
-                // initialValues,
                 initialValues: params,
                 jacobianFunction: params => index => jacobianModel(params)(index),
                 maxIterations: it,
-                // errorTolerance: 1,
             },
         );
-        // console.log(result)
 
-        // console.log(prevErr / result.parameterError)
         if (prevErr / result.parameterError < 1.000001) {
             console.log((i + 1) * it);
             break;
@@ -218,22 +213,34 @@ function calculate(inputdata, func) {
         prevErr = result.parameterError;
         params = result.parameterValues;
     }
-    // console.timeEnd("c")
 
     const y2bOpt = result.parameterValues.map((value, i) => value * scale[i]);
 
     const x_ = y2bOpt.slice(0, n).map(v => v * yScale);
-    console.log("x^:", x_);
+    // console.log("x^:", x_);
 
     const bOpt = y2bOpt.slice(n);
     const bOptCov = covariance(result.parameterValues, preparedData, scale, func);
     const bRes = residualsInn(result.parameterValues);
 
+    const { u, gamma } = parseResults(bOpt, bOptCov, bRes, xScale, yScale);
+
+    // return [bOpt, bOptCov, bRes, x_];
+    return {
+        a: bOpt,
+        u,
+        x_,
+        S: result.parameterError,
+        gamma,
+    };
+}
+
+function parseResults(bOpt, bCov, bRes, xScale, yScale) {
     // console.log(bOptCov)
-    for (let i = 0; i < bOptCov.length; i++) {
-        for (let j = 0; j < bOptCov[i].length; j++) {
+    for (let i = 0; i < bCov.length; i++) {
+        for (let j = 0; j < bCov[i].length; j++) {
             const factorX = Math.pow(yScale, i + j);
-            bOptCov[i][j] *= Math.pow(xScale, 2) / factorX;
+            bCov[i][j] *= Math.pow(xScale, 2) / factorX;
         }
     }
 
@@ -242,7 +249,11 @@ function calculate(inputdata, func) {
     bOpt[2] = (bOpt[2] * xScale) / yScale ** 2 || 0;
     bOpt[3] = (bOpt[3] * xScale) / yScale ** 3 || 0;
 
-    return [bOpt, bOptCov, bRes, x_];
+    const u = bCov.map((row, i) => Math.sqrt(row[i]));
+
+    const gamma = Math.max(...bRes.map(value => Math.abs(value)));
+    // console.log(uncertainties, gamma);
+    return { u, gamma };
 }
 
 export default function getFit(data, order) {
