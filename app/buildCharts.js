@@ -1,9 +1,10 @@
-import buildChart, { addDataset } from "./chart";
+// import buildChart, { addDataset } from "./chart";
+import mainChart from "./chart";
 import buildChart2, { addDataset2 } from "./chart2";
 import prepareChartData from "./prepareChartData";
 
 function addToBoth(...args) {
-    addDataset(...args);
+    mainChart.addDataset(...args);
     addDataset2(...args);
 }
 
@@ -62,6 +63,6 @@ export default function buildCharts() {
         radius: 3,
     });
 
-    buildChart();
+    mainChart.build();
     buildChart2(maxU.x, maxU.y);
 }

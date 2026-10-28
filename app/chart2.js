@@ -10,6 +10,7 @@ import {
     ScatterController,
     Tooltip,
 } from "chart.js";
+import zoomPlugin from "chartjs-plugin-zoom";
 
 const chartData = {
     datasets: [],
@@ -195,18 +196,18 @@ export default function buildChart2(maxUx, maxUy) {
                     //     },
                     // },
                 },
-                // zoom: {
-                //     pan: {
-                //         enabled: true,
-                //         mode: "xy",
-                //         modifierKey: null,
-                //         threshold: 10,
-                //     },
-                //     zoom: {
-                //         wheel: { enabled: true },
-                //         pinch: { enabled: true },
-                //     },
-                // },
+                zoom: {
+                    pan: {
+                        enabled: true,
+                        mode: "xy",
+                        modifierKey: null,
+                        threshold: 10,
+                    },
+                    zoom: {
+                        wheel: { enabled: true },
+                        pinch: { enabled: true },
+                    },
+                },
             },
             scales: {
                 x: {

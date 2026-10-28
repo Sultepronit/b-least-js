@@ -1,6 +1,4 @@
 import getFit from "./b-least";
-import buildChart, { addDataset } from "./chart";
-import buildChart2, { addDataset2 } from "./chart2";
 import { get10723 } from "./iso10723";
 
 function fn(args, x) {

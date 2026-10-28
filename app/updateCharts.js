@@ -1,4 +1,4 @@
-import buildChart, { addDataset, updateChart } from "./chart";
+// import buildChart, { addDataset, updateChart } from "./chart";
 import { updateChart2 } from "./chart2";
 
 import prepareChartData from "./prepareChartData";
