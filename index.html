@@ -8,22 +8,34 @@
         <script type="module" src="main.js"></script>
     </head>
     <body>
-        <select id="examples">
-            <option value="0">ISO 10723: Nitrogen</option>
-            <option value="1">ISO 10723: Carbon Dioxide</option>
-            <option value="2">ISO 10723: Methane</option>
-            <option value="3">ISO 10723: Ethane</option>
-        </select>
-        <table>
-            <tbody id="results-tbody"></tbody>
-        </table>
-        <div class="charts">
+        <div class="data">
+            <select id="examples">
+                <option value="0">ISO 10723: Nitrogen</option>
+                <option value="1">ISO 10723: Carbon Dioxide</option>
+                <option value="2">ISO 10723: Methane</option>
+                <option value="3">ISO 10723: Ethane</option>
+            </select>
+            <table class="results-table">
+                <!-- prettier-ignore -->
+                <caption>
+                y = a<sub>0</sub> + a<sub>1</sub>x
+                + a<sub>2</sub>x<sup>2</sup> + a<sub>3</sub>x<sup>3</sup>
+            </caption>
+                <tbody id="results-tbody"></tbody>
+            </table>
             <div class="add-chart">
                 <canvas id="chart-2"></canvas>
             </div>
+        </div>
+
+        <div class="main-chart">
+            <canvas id="chart"></canvas>
+        </div>
+
+        <!-- <div class="charts">
             <div class="main-chart">
                 <canvas id="chart"></canvas>
             </div>
-        </div>
+        </div> -->
     </body>
 </html>

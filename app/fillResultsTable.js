@@ -24,7 +24,7 @@ export default function fillResultsTable(data) {
     console.log(data);
     tbody.innerHTML =
         `<tr>
-    <th></th><th>S</th><th>Γ</th>
+    <th></th><th>S<sub>res</sub></th><th>Γ</th>
     <th>a<sub>0</sub></th>
     <th>a<sub>1</sub></th>
     <th>a<sub>2</sub></th>
