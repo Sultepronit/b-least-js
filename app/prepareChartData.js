@@ -1,6 +1,7 @@
 import getFit from "./b-least";
-import fillResultsTable from "./fillResultsTable";
+import fillResultsTable from "./view/fillResultsTable";
 import { get10723 } from "./iso10723";
+import fillInputTable from "./view/fillInputTable";
 
 function fn(args, x) {
     return args[0] + args[1] * x + args[2] * x ** 2 + args[3] * x ** 3;
@@ -22,13 +23,14 @@ function presentFn(inputData, order, type) {
         if (max > 100) max = 100;
     }
 
-    const steps = 100;
+    const steps = 200;
     const step = (max - min) / steps;
     const line = [];
     for (let i = 0; i <= steps; i++) {
         const x = min + i * step;
         const y = fn(args, x);
-        // if (xy === "y" && y < 0) continue;
+        if (xy === "y" && y < 0) continue;
+        if (xy === "y" && y > 100) continue;
         line.push({
             [xy]: x,
             [yx]: y,
@@ -43,6 +45,7 @@ function presentFn(inputData, order, type) {
 export default function prepareChartData(setNumber, type = "x") {
     const inputData = get10723(setNumber);
     console.log(inputData);
+    fillInputTable(inputData);
 
     const fns = [];
     for (let i = 1; i <= 3; i++) {

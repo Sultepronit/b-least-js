@@ -12,6 +12,12 @@ select {
     font: inherit;
 }
 
+h3 {
+    font: inherit;
+    font-weight: bold;
+    text-align: center;
+}
+
 td,
 th {
     padding-inline: 0.4em;
@@ -26,7 +32,7 @@ th {
 }
 
 body {
-    height: 100dvh;
+    height: 100vh;
     width: 100%;
     display: grid;
     grid-template-columns: auto 1fr;
@@ -44,9 +50,23 @@ body {
     }
 
     .main-chart {
-        max-height: 90dvh;
+        max-height: 90vh;
         height: 800px;
     }
+}
+
+.input-container {
+    width: 0;
+    min-width: 100%;
+    overflow: auto;
+}
+
+/* .input-table {
+    overflow: auto;
+} */
+
+.input-table caption {
+    font-weight: bold;
 }
 
 .results-table caption {
@@ -54,7 +74,8 @@ body {
     font-style: italic;
 }
 
-.results-table th {
+.results-table th,
+.input-table th {
     font-style: italic;
 }
 
@@ -93,6 +114,10 @@ body {
 
 .right {
     text-align: right;
+}
+
+.left {
+    text-align: left;
 }
 
 .b {

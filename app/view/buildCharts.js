@@ -1,12 +1,9 @@
-// import buildChart, { addDataset } from "./chart";
-import mainChart from "./chart";
-import zoomChart from "./chart2";
-// import buildChart2, { addDataset2 } from "./chart2";
-import prepareChartData from "./prepareChartData";
+import mainChart from "./mainChart";
+import zoomChart from "./zoomChart";
+import prepareChartData from "../prepareChartData";
 
 function addToBoth(...args) {
     mainChart.addDataset(...args);
-    // addDataset2(...args);
     zoomChart.addDataset(...args);
 }
 
@@ -59,13 +56,10 @@ export default function buildCharts() {
         data: y,
         pointStyle: "circle",
         color: "black",
-        // width: 2,
-        // radius: 6,
         fill: true,
         radius: 3,
     });
 
     mainChart.build();
-    // buildChart2(maxU.x, maxU.y);
     zoomChart.build(maxU.x, maxU.y);
 }

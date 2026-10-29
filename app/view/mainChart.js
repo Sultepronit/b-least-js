@@ -2,7 +2,7 @@ import { Chart } from "chart.js";
 
 // import { updateZoomedView } from "./chart2";
 import ChartBase from "./chartBase";
-import zoomChart from "./chart2";
+import zoomChart from "./zoomChart";
 
 class MainChart extends ChartBase {
     constructor() {

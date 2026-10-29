@@ -21,12 +21,9 @@ function genFnRows(fnData, idx) {
 }
 
 export default function fillResultsTable(data, type) {
-    console.log(data);
-    console.log(tbody.previousElementSibling);
-
     tbody.previousElementSibling.innerHTML =
         type === "x"
-            ? "y = a<sub>0</sub> + a<sub>1</sub>x+ a<sub>2</sub>x<sup>2</sup> + a<sub>3</sub>x<sup>3</sup>"
+            ? "y = a<sub>0</sub> + a<sub>1</sub>x + a<sub>2</sub>x<sup>2</sup> + a<sub>3</sub>x<sup>3</sup>"
             : "x = b<sub>0</sub> + b<sub>1</sub>y + b<sub>2</sub>y<sup>2</sup> + b<sub>3</sub>y<sup>3</sup>";
 
     const paramName = type === "x" ? "a" : "b";

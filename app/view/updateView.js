@@ -1,7 +1,7 @@
-import mainChart from "./chart";
-import zoomChart from "./chart2";
+import mainChart from "./mainChart";
+import zoomChart from "./zoomChart";
 
-import prepareChartData from "./prepareChartData";
+import prepareChartData from "../prepareChartData";
 
 export default function updateView(setNumber, type) {
     const data = prepareChartData(setNumber, type === "analysis" ? "x" : "y");

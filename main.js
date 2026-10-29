@@ -1,7 +1,7 @@
 import "./style/main.css";
 
-import buildCharts from "./app/buildCharts.js";
-import updateView from "./app/updateView.js";
+import buildCharts from "./app/view/buildCharts.js";
+import updateView from "./app/view/updateView.js";
 
 buildCharts();
 
