@@ -2,8 +2,11 @@ import "./style/main.css";
 
 import buildCharts from "./app/view/buildCharts.js";
 import updateView from "./app/view/updateView.js";
+import setLegend from "./app/view/customLegend.js";
 
 buildCharts();
+
+setLegend();
 
 // document.getElementById("examples").addEventListener("change", e => {
 //     updateView(e.target.value);

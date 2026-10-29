@@ -20,14 +20,14 @@ class MainChart extends ChartBase {
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        display: true,
-                        align: "end",
-                        labels: {
-                            boxWidth: 16,
-                            font: {
-                                size: 16,
-                            },
-                        },
+                        display: false,
+                        // align: "end",
+                        // labels: {
+                        //     boxWidth: 16,
+                        //     font: {
+                        //         size: 16,
+                        //     },
+                        // },
                     },
                     tooltip: {
                         titleFont: {

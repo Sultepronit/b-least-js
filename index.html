@@ -11,10 +11,10 @@
         <div class="data">
             <form id="controls">
                 <select id="examples">
-                    <option value="0">ISO 10723: Nitrogen</option>
-                    <option value="1">ISO 10723: Carbon Dioxide</option>
-                    <option value="2">ISO 10723: Methane</option>
-                    <option value="3">ISO 10723: Ethane</option>
+                    <option value="0">ISO 10723:2012, Nitrogen</option>
+                    <option value="1">ISO 10723:2012, Carbon Dioxide</option>
+                    <option value="2">ISO 10723:2012, Methane</option>
+                    <option value="3">ISO 10723:2012, Ethane</option>
                 </select>
                 <div>
                     <label>
@@ -46,13 +46,23 @@
         </div>
 
         <div class="main-chart">
-            <div>
+            <form id="legend">
                 <!-- prettier-ignore -->
-                <label>
-                    <input type="checkbox" name="" id="" />
-                    f<sup>1</sup>
+                <label class="i">
+                    <input type="checkbox" name="f1" checked />
+                    f<sup>1</sup> <span>—</span>
                 </label>
-            </div>
+                <!-- prettier-ignore -->
+                <label class="i">
+                    <input type="checkbox" name="f2" checked />
+                    f<sup>2</sup> <span>—</span>
+                </label>
+                <!-- prettier-ignore -->
+                <label class="i">
+                    <input type="checkbox" name="f3" checked />
+                    f<sup>3</sup> <span>—</span>
+                </label>
+            </form>
             <div class="main-chart-cont">
                 <canvas id="chart"></canvas>
             </div>

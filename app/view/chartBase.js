@@ -8,6 +8,7 @@ import {
     Tooltip,
 } from "chart.js";
 import zoomPlugin from "chartjs-plugin-zoom";
+// import setLegend from "./customLegend";
 
 Chart.register(
     ScatterController,
@@ -52,4 +53,19 @@ export default class ChartBase {
         this.chart.data.datasets[12].data = y;
         this.chart.update();
     }
+
+    sets = {
+        f1: [4, 5],
+        f2: [2, 3],
+        f3: [0, 1],
+    };
+
+    toggleDataset(setName, visible) {
+        for (const n of this.sets[setName]) {
+            this.chart.setDatasetVisibility(n, visible);
+        }
+        this.chart.update();
+    }
 }
+
+// setLegend();
