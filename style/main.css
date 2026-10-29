@@ -89,6 +89,11 @@ body {
     height: 800px; */
     height: 100%;
     /* width: 100%; */
+    /* min-width: 10%; */
+    display: grid;
+}
+
+.main-chart-cont {
     min-width: 10%;
 }
 
