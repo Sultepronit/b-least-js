@@ -9,20 +9,30 @@
     </head>
     <body>
         <div class="data">
-            <select id="examples">
-                <option value="0">ISO 10723: Nitrogen</option>
-                <option value="1">ISO 10723: Carbon Dioxide</option>
-                <option value="2">ISO 10723: Methane</option>
-                <option value="3">ISO 10723: Ethane</option>
-            </select>
+            <form id="controls">
+                <select id="examples">
+                    <option value="0">ISO 10723: Nitrogen</option>
+                    <option value="1">ISO 10723: Carbon Dioxide</option>
+                    <option value="2">ISO 10723: Methane</option>
+                    <option value="3">ISO 10723: Ethane</option>
+                </select>
+                <div>
+                    <label>
+                        <input type="radio" name="type" value="analysis" checked />
+                        Analysis function
+                    </label>
+                    <label>
+                        <input type="radio" name="type" value="calibration" />
+                        Calibration function
+                    </label>
+                </div>
+            </form>
+
             <table class="results-table">
-                <!-- prettier-ignore -->
-                <caption>
-                y = a<sub>0</sub> + a<sub>1</sub>x
-                + a<sub>2</sub>x<sup>2</sup> + a<sub>3</sub>x<sup>3</sup>
-            </caption>
+                <caption></caption>
                 <tbody id="results-tbody"></tbody>
             </table>
+
             <div class="add-chart">
                 <canvas id="chart-2"></canvas>
             </div>

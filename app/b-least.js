@@ -144,9 +144,7 @@ function prepareInput(inputdata) {
     let xScale = getScaleFactor(inputdata.y);
     let yScale = getScaleFactor(inputdata.x);
 
-    // const preparedData = { ...inputdata, x: [], ux: [], y: [], uy: [] }
     const preparedData = { x: [], ux: [], y: [], uy: [] };
-    // preparedData.y = scaledY
     for (let i = 0; i < inputdata.y.length; i++) {
         preparedData.y[i] = inputdata.x[i] / yScale;
         preparedData.uy[i] = inputdata.ux[i] / yScale;
@@ -256,8 +254,18 @@ function parseResults(bOpt, bCov, bRes, xScale, yScale) {
     return { u, gamma };
 }
 
-export default function getFit(data, order) {
-    return calculate(data, order === 1 ? linearFunc : order === 2 ? qudraticFunc : cubicFunc);
+export default function getFit(data, order, type = "x") {
+    const func = order === 1 ? linearFunc : order === 2 ? qudraticFunc : cubicFunc;
+    if (type === "y") {
+        const revData = {
+            x: data.y,
+            ux: data.uy,
+            y: data.x,
+            uy: data.ux,
+        };
+        return calculate(revData, func);
+    }
+    return calculate(data, func);
 }
 
 function present(b, bCov, bRes) {

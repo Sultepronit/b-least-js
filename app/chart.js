@@ -57,8 +57,10 @@ class MainChart extends ChartBase {
                 },
                 scales: {
                     x: {
-                        // min: this.data.minX,
-                        // max: this.data.maxX,
+                        // suggestedMin: 0,
+                        // suggestedMax: 100,
+                        // min: 0,
+                        // max: 100,
                         ticks: {
                             font: {
                                 size: 16,

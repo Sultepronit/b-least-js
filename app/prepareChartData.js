@@ -6,46 +6,50 @@ function fn(args, x) {
     return args[0] + args[1] * x + args[2] * x ** 2 + args[3] * x ** 3;
 }
 
-function presentFn(inputData, order) {
-    const fitData = getFit(inputData, order);
+function presentFn(inputData, order, type) {
+    const fitData = getFit(inputData, order, type);
     console.log(fitData);
 
-    // fillResultsTable(fitData);
-
     const args = fitData.a;
-    const x_ = fitData.x_;
-    const maxX = Math.max(...inputData.x);
-    let min = Math.min(...inputData.x) - maxX * 0.02;
-    if (min < 0) min = 0;
-    let max = maxX * 1.02;
-    if (max > 100) max = 100;
+
+    const [xy, yx] = type === "x" ? ["x", "y"] : ["y", "x"];
+
+    let max = Math.max(...inputData[xy]);
+    let min = Math.min(...inputData[xy]) - max * 0.02;
+    max = max * 1.02;
+    if (xy === "x") {
+        if (min < 0) min = 0;
+        if (max > 100) max = 100;
+    }
 
     const steps = 100;
     const step = (max - min) / steps;
     const line = [];
     for (let i = 0; i <= steps; i++) {
         const x = min + i * step;
+        const y = fn(args, x);
+        // if (xy === "y" && y < 0) continue;
         line.push({
-            x,
-            y: fn(args, x),
+            [xy]: x,
+            [yx]: y,
         });
     }
-    // console.log(line);
-    const corr = x_.map(x => ({ x, y: fn(args, x) }));
-    // return line;
+
+    const corr = fitData.x_.map(x => ({ [xy]: x, [yx]: fn(args, x) }));
+
     return { line, corr, results: fitData };
 }
 
-export default function prepareChartData(setNumber = 0) {
+export default function prepareChartData(setNumber, type = "x") {
     const inputData = get10723(setNumber);
     console.log(inputData);
 
     const fns = [];
     for (let i = 1; i <= 3; i++) {
-        fns.push(presentFn(inputData, i));
+        fns.push(presentFn(inputData, i, type));
     }
 
-    fillResultsTable(fns);
+    fillResultsTable(fns, type);
 
     const expDots = [];
     for (let i = 0; i < inputData.x.length; i++) {
