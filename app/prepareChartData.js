@@ -10,7 +10,7 @@ function presentFn(inputData, order) {
     const fitData = getFit(inputData, order);
     console.log(fitData);
 
-    fillResultsTable(fitData);
+    // fillResultsTable(fitData);
 
     const args = fitData.a;
     const x_ = fitData.x_;
@@ -33,7 +33,7 @@ function presentFn(inputData, order) {
     // console.log(line);
     const corr = x_.map(x => ({ x, y: fn(args, x) }));
     // return line;
-    return { line, corr };
+    return { line, corr, results: fitData };
 }
 
 export default function prepareChartData(setNumber = 0) {
@@ -44,6 +44,8 @@ export default function prepareChartData(setNumber = 0) {
     for (let i = 1; i <= 3; i++) {
         fns.push(presentFn(inputData, i));
     }
+
+    fillResultsTable(fns);
 
     const expDots = [];
     for (let i = 0; i < inputData.x.length; i++) {

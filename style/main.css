@@ -8,6 +8,23 @@ body {
     padding: 0.5em;
 }
 
+td,
+th {
+    padding-inline: 0.3em;
+}
+
+table,
+td,
+th {
+    border: 1px solid;
+    border-collapse: collapse;
+    border-color: black;
+}
+
+#results-tbody th {
+    font-style: italic;
+}
+
 .charts {
     position: relative;
     height: 800px;
@@ -18,7 +35,8 @@ body {
 .add-chart {
     position: absolute;
     height: 40%;
-    width: 40%;
+    /* width: 40%; */
+    /* aspect-ratio: 1 / 2; */
     bottom: 3rem;
     right: 1.7rem;
     z-index: 10;
@@ -34,4 +52,20 @@ body {
     /* height: 800px; */
     height: 100%;
     width: 100%;
+}
+
+.red {
+    color: red;
+}
+
+.right {
+    text-align: right;
+}
+
+.b {
+    font-weight: bold;
+}
+
+.i {
+    font-style: italic;
 }
