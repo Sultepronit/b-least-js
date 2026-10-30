@@ -8,7 +8,7 @@ import {
     Tooltip,
 } from "chart.js";
 import zoomPlugin from "chartjs-plugin-zoom";
-// import setLegend from "./customLegend";
+import { determineOrder } from "../helpers";
 
 Chart.register(
     ScatterController,
@@ -24,6 +24,8 @@ export default class ChartBase {
     data = { datasets: [] };
     chart = null;
     canvas = null;
+    ticksCache = [];
+    expOrder = 0;
 
     addDataset({ label, data, pointStyle, width, color, fill = false, radius = 5 }) {
         this.data.datasets.push({
@@ -58,6 +60,9 @@ export default class ChartBase {
         f1: [4, 5],
         f2: [2, 3],
         f3: [0, 1],
+        adjusted: [1, 3, 5],
+        experimental: [12],
+        raw: [6, 7, 8, 9, 10, 11],
     };
 
     toggleDataset(setName, visible) {
@@ -66,6 +71,26 @@ export default class ChartBase {
         }
         this.chart.update();
     }
-}
 
-// setLegend();
+    precalculateYTicks = {
+        id: "precalculateYTicks",
+        afterBuildTicks: chart => {
+            if (
+                this.ticksCache[0] === chart.scales.y.ticks[0].value &&
+                this.ticksCache[1] === chart.scales.y.ticks[1].value
+            ) {
+                return;
+            }
+
+            this.ticksCache = chart.scales.y.ticks.map(({ value }) => value);
+
+            const order = determineOrder(this.ticksCache, true);
+
+            chart._yTicks = {};
+            for (const t of this.ticksCache) {
+                chart._yTicks[t] = t === 0 ? 0 : t.toExponential(order);
+            }
+            // console.log(chart._yTicks);
+        },
+    };
+}

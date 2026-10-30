@@ -74,12 +74,15 @@ class MainChart extends ChartBase {
                             font: {
                                 size: 16,
                             },
-                            maxTicksLimit: 20,
+                            // maxTicksLimit: 20,
                             callback: function (value) {
-                                if (Math.abs(value) > 1000) {
-                                    return value.toExponential(2);
-                                }
-                                return value.toLocaleString();
+                                // console.log(value);
+                                // console.log(this.ticks);
+                                // if (Math.abs(value) > 1000) {
+                                //     return value.toExponential(2);
+                                // }
+                                // return value.toLocaleString();
+                                return this.chart._yTicks?.[value] ?? value;
                             },
                         },
                     },
@@ -108,6 +111,7 @@ class MainChart extends ChartBase {
                     }
                 },
             },
+            plugins: [this.precalculateYTicks],
             data: this.data,
         });
     }

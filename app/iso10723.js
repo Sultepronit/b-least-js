@@ -1,4 +1,4 @@
-import { calculate_s, calculateAverage } from "./helpers"
+import { calculate_s, calculateAverage, determineOrder } from "./helpers";
 
 const data = [
     {
@@ -59,12 +59,12 @@ const data = [
             [110611000, 110602000, 110640000, 110622000, 110621000, 110647000],
         ],
     },
-]
+];
 
 export function get10723(index) {
-    const { name, x, ux, responses } = data[index]
+    const { name, x, ux, responses } = data[index];
 
-    const y = responses.map(e => calculateAverage(e))
+    const y = responses.map(e => calculateAverage(e));
     return {
         name,
         x,
@@ -72,5 +72,8 @@ export function get10723(index) {
         y,
         uy: responses.map((r, i) => calculate_s(r, y[i])),
         responses,
-    }
+    };
 }
+
+const d1 = get10723(2);
+determineOrder(d1.responses[6]);

@@ -12,6 +12,10 @@ select {
     font: inherit;
 }
 
+label {
+    user-select: none;
+}
+
 h3 {
     font: inherit;
     font-weight: bold;
@@ -83,6 +87,11 @@ body {
     text-align: right;
 }
 
+#legend {
+    display: flex;
+    gap: 1em;
+}
+
 .main-chart {
     /* position: relative; */
     /* max-height: 90dvh;
@@ -115,6 +124,18 @@ body {
 
 .red {
     color: red;
+}
+
+.green {
+    color: green;
+}
+
+.blue {
+    color: blue;
+}
+
+.purple {
+    color: purple;
 }
 
 .right {

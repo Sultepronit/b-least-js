@@ -10,9 +10,9 @@ function addToBoth(...args) {
 export default function buildCharts() {
     const { fns, expDots, y, maxU } = prepareChartData(0);
 
-    addToBoth({ label: "fn3", data: fns[2].line, color: "purple", width: 1 });
+    addToBoth({ label: "f3", data: fns[2].line, color: "purple", width: 1 });
     addToBoth({
-        label: "fn3",
+        label: "f3",
         data: fns[2].corr,
         pointStyle: "crossRot",
         color: "purple",

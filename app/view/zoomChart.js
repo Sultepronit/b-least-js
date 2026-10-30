@@ -64,6 +64,16 @@ const errorBarsPlugin = {
     },
 };
 
+// const precalculateYTicks2 = {
+//     id: "precalculateYTicks",
+//     afterBuildTicks: scale => {
+//         console.log("here we go!");
+//         console.log(scale);
+//         if (scale.id != "y") return;
+//         console.log(scale.ticks);
+//     },
+// };
+
 class ZoomChart extends ChartBase {
     U = { x: 0, y: 0 };
     constructor() {
@@ -74,6 +84,7 @@ class ZoomChart extends ChartBase {
     build(maxUx, maxUy) {
         this.U.x = maxUx;
         this.U.y = maxUy;
+        console.log(this.expOrder);
 
         this.chart = new Chart(this.canvas, {
             type: "scatter",
@@ -135,16 +146,19 @@ class ZoomChart extends ChartBase {
                             },
                             // maxTicksLimit: 20,
                             callback: function (value) {
-                                if (Math.abs(value) > 1000) {
-                                    return value.toExponential(3);
-                                }
-                                return value.toLocaleString();
+                                // console.log(this.expOrder);
+                                // if (Math.abs(value) > 1000) {
+                                //     return value.toExponential(3);
+                                // }
+                                // return value.toLocaleString();
+                                // console.log(this.chart._yTicks);
+                                return this.chart._yTicks?.[value] ?? value;
                             },
                         },
                     },
                 },
             },
-            plugins: [errorBarsPlugin],
+            plugins: [errorBarsPlugin, this.precalculateYTicks],
             data: this.data,
         });
     }
