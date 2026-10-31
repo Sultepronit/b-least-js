@@ -36,11 +36,12 @@ class MainChart extends ChartBase {
                         bodyFont: {
                             size: 16,
                         },
-                        // callbacks: {
-                        //     title: function (context) {
-                        //         return formatUkDate(context[0].label)
-                        //     },
-                        // },
+                        callbacks: {
+                            title: function (context) {
+                                // return formatUkDate(context[0].label)
+                                console.log(context);
+                            },
+                        },
                     },
                     // zoom: {
                     //     pan: {

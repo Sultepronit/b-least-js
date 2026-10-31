@@ -1,4 +1,5 @@
 import { calculate_s, calculateAverage, determineOrder } from "./helpers";
+import iso6143 from "./iso6143";
 
 const data = [
     {
@@ -17,7 +18,7 @@ const data = [
     },
 
     {
-        name: "carbon_dioxide",
+        name: "carbon dioxide",
         x: [0.0475, 1.4901, 7.9555, 2.9817, 0.5015, 6.0345, 4.5005],
         ux: [0.0043, 0.0079, 0.0224, 0.0115, 0.003, 0.0219, 0.0181],
         responses: [
@@ -62,6 +63,10 @@ const data = [
 ];
 
 export function get10723(index) {
+    console.log();
+    if (index == data.length) {
+        return iso6143[1];
+    }
     const { name, x, ux, responses } = data[index];
 
     const y = responses.map(e => calculateAverage(e));

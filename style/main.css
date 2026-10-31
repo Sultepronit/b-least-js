@@ -90,6 +90,7 @@ body {
 #legend {
     display: flex;
     gap: 1em;
+    flex-wrap: wrap;
 }
 
 .main-chart {
@@ -104,6 +105,7 @@ body {
 
 .main-chart-cont {
     min-width: 10%;
+    min-height: 10%;
 }
 
 .add-chart {

@@ -2,8 +2,6 @@
 
 import { levenbergMarquardt } from "ml-levenberg-marquardt";
 import { Matrix, pseudoInverse } from "ml-matrix";
-import { example1, example2 } from "./examples.js";
-import { get10723 } from "./iso10723.js";
 import { getScaleFactor } from "./helpers.js";
 
 // def b_linear_func(y, b):
@@ -266,30 +264,4 @@ export default function getFit(data, order, type = "x") {
         return calculate(revData, func);
     }
     return calculate(data, func);
-}
-
-function present(b, bCov, bRes) {
-    const uncertainties = bCov.map((row, i) => Math.sqrt(row[i]));
-
-    // const residualSum = bRes.reduce((sum, value) => sum + value * value, 0)
-
-    const maxAbsDeviation = Math.max(...bRes.map(value => Math.abs(value)));
-
-    console.log("Coefficients b");
-    console.log(b);
-
-    console.log("Uncertainties u(b)");
-    console.log(uncertainties);
-    // for (let i = 0; i < b.length; i++) {
-    //     console.log((uncertainties[i] / b[i]) * 100)
-    // }
-
-    // console.log("Covariance cov(b)")
-    // console.table(bCov)
-
-    // console.log("Residual")
-    // console.log(residualSum)
-
-    console.log("Maximum absolute value of weighted deviations");
-    console.log(maxAbsDeviation);
 }

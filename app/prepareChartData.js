@@ -56,7 +56,7 @@ export default function prepareChartData(setNumber, type = "x") {
 
     const expDots = [];
     for (let i = 0; i < inputData.x.length; i++) {
-        for (let j = 0; j < inputData.responses[0].length; j++) {
+        for (let j = 0; j < inputData.responses?.[0].length; j++) {
             if (!expDots[j]) expDots[j] = [];
             expDots[j][i] = { x: inputData.x[i], y: inputData.responses[i][j] };
         }
