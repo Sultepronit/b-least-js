@@ -10,7 +10,7 @@ function addToBoth(...args) {
 export default function buildCharts() {
     const { fns, expDots, y, maxU } = prepareChartData(0);
 
-    addToBoth({ label: "f3", data: fns[2].line, color: "purple", width: 1 });
+    addToBoth({ label: "(f3)", data: fns[2].line, color: "purple", width: 1 });
     addToBoth({
         label: "f3",
         data: fns[2].corr,
@@ -20,9 +20,9 @@ export default function buildCharts() {
         radius: 5,
     });
 
-    addToBoth({ label: "fn2", data: fns[1].line, color: "blue", width: 1 });
+    addToBoth({ label: "(f2)", data: fns[1].line, color: "blue", width: 1 });
     addToBoth({
-        label: "fn2",
+        label: "f2",
         data: fns[1].corr,
         pointStyle: "crossRot",
         color: "blue",
@@ -30,9 +30,9 @@ export default function buildCharts() {
         radius: 5,
     });
 
-    addToBoth({ label: "fn1", data: fns[0].line, color: "green", width: 1 });
+    addToBoth({ label: "(f1)", data: fns[0].line, color: "green", width: 1 });
     addToBoth({
-        label: "fn1",
+        label: "f1",
         data: fns[0].corr,
         pointStyle: "crossRot",
         color: "green",
@@ -42,7 +42,7 @@ export default function buildCharts() {
 
     for (let i = 0; i < expDots.length; i++) {
         addToBoth({
-            label: `y${i + 1}`,
+            label: `resp. ${i + 1}`,
             data: expDots[i],
             pointStyle: "circle",
             color: "red",
@@ -52,7 +52,7 @@ export default function buildCharts() {
     }
 
     addToBoth({
-        label: "y",
+        label: "exp.",
         data: y,
         pointStyle: "circle",
         color: "black",
