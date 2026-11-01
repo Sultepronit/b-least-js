@@ -42,7 +42,7 @@ function presentFn(inputData, order, type) {
     return { line, corr, results: fitData };
 }
 
-export default function prepareChartData(setNumber, type = "x") {
+export default function prepareChartData(setNumber, type = "y") {
     const inputData = get10723(setNumber);
     console.log(inputData);
     fillInputTable(inputData);
