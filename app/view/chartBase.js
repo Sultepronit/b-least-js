@@ -67,23 +67,32 @@ export default class ChartBase {
         f3: [0, 1],
         adjusted: [1, 3, 5],
         experimental: [12],
-        raw: [6, 7, 8, 9, 10, 11],
+        responses: [6, 7, 8, 9, 10, 11],
+        showU: true,
         excludedF: new Set(),
         adjAreExcluded: false,
     };
 
     toggleDataset(setName, visible) {
+        if (setName === "uncertainties") {
+            this.sets.showU = visible;
+            this.chart.update();
+            return;
+        }
+
         if (setName.startsWith("f")) {
             if (visible) this.sets.excludedF.delete(this.sets[setName][1]);
             else this.sets.excludedF.add(this.sets[setName][1]);
         } else if (setName === "adjusted") {
             this.sets.adjAreExcluded = !visible;
         }
+
         for (const n of this.sets[setName]) {
             if (setName === "adjusted" && visible && this.sets.excludedF.has(n)) continue;
             this.chart.setDatasetVisibility(n, visible);
             if (setName.startsWith("f") && this.sets.adjAreExcluded) break;
         }
+
         this.chart.update();
     }
 

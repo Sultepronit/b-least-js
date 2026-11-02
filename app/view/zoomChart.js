@@ -1,71 +1,135 @@
 import { Chart } from "chart.js";
 import ChartBase from "./chartBase";
 
-const errorBarsPlugin = {
-    id: "errorBars",
-    beforeDatasetsDraw(chart) {
-        if (!chart.isDatasetVisible(12)) return;
-        const ctx = chart.ctx;
-        const xAxis = chart.scales.x;
-        const yAxis = chart.scales.y;
+// const errorBarsPlugin = {
+//     id: "errorBars",
+//     beforeDatasetsDraw(chart) {
+//         // if (!chart.isDatasetVisible(12)) return;
+//         console.log(chart);
+//         if (!chart.sets.showU) return;
+//         const ctx = chart.ctx;
+//         const xAxis = chart.scales.x;
+//         const yAxis = chart.scales.y;
 
-        const dataset = chart.data.datasets[12];
-        if (!dataset || !dataset.data) return;
+//         const dataset = chart.data.datasets[12];
+//         if (!dataset || !dataset.data) return;
 
-        ctx.save();
-        ctx.strokeStyle = "black";
-        ctx.lineWidth = 1;
+//         ctx.save();
+//         ctx.strokeStyle = "black";
+//         ctx.lineWidth = 1;
 
-        dataset.data.forEach(pt => {
-            if (pt.Uy && pt.Ux) {
-                const pixelX = xAxis.getPixelForValue(pt.x);
-                const pixelYTop = yAxis.getPixelForValue(pt.y + pt.Uy);
-                const pixelYBottom = yAxis.getPixelForValue(pt.y - pt.Uy);
+//         dataset.data.forEach(pt => {
+//             if (pt.Uy && pt.Ux) {
+//                 const pixelX = xAxis.getPixelForValue(pt.x);
+//                 const pixelYTop = yAxis.getPixelForValue(pt.y + pt.Uy);
+//                 const pixelYBottom = yAxis.getPixelForValue(pt.y - pt.Uy);
 
-                const pixelY = yAxis.getPixelForValue(pt.y);
-                const pixelXLeft = xAxis.getPixelForValue(pt.x - pt.Ux);
-                const pixelXRight = xAxis.getPixelForValue(pt.x + pt.Ux);
+//                 const pixelY = yAxis.getPixelForValue(pt.y);
+//                 const pixelXLeft = xAxis.getPixelForValue(pt.x - pt.Ux);
+//                 const pixelXRight = xAxis.getPixelForValue(pt.x + pt.Ux);
 
-                // y!
-                ctx.beginPath();
-                ctx.moveTo(pixelX, pixelYTop);
-                ctx.lineTo(pixelX, pixelYBottom);
-                ctx.stroke();
+//                 // y!
+//                 ctx.beginPath();
+//                 ctx.moveTo(pixelX, pixelYTop);
+//                 ctx.lineTo(pixelX, pixelYBottom);
+//                 ctx.stroke();
 
-                const capSizeX = (pixelXRight - pixelXLeft) / 10;
-                ctx.beginPath();
-                ctx.moveTo(pixelX - capSizeX, pixelYTop);
-                ctx.lineTo(pixelX + capSizeX, pixelYTop);
-                ctx.moveTo(pixelX - capSizeX, pixelYBottom);
-                ctx.lineTo(pixelX + capSizeX, pixelYBottom);
-                ctx.stroke();
+//                 const capSizeX = (pixelXRight - pixelXLeft) / 10;
+//                 ctx.beginPath();
+//                 ctx.moveTo(pixelX - capSizeX, pixelYTop);
+//                 ctx.lineTo(pixelX + capSizeX, pixelYTop);
+//                 ctx.moveTo(pixelX - capSizeX, pixelYBottom);
+//                 ctx.lineTo(pixelX + capSizeX, pixelYBottom);
+//                 ctx.stroke();
 
-                // x!
-                ctx.beginPath();
-                ctx.moveTo(pixelXRight, pixelY);
-                ctx.lineTo(pixelXLeft, pixelY);
-                ctx.stroke();
+//                 // x!
+//                 ctx.beginPath();
+//                 ctx.moveTo(pixelXRight, pixelY);
+//                 ctx.lineTo(pixelXLeft, pixelY);
+//                 ctx.stroke();
 
-                const capSizeY = (pixelYTop - pixelYBottom) / 10;
-                ctx.beginPath();
-                ctx.moveTo(pixelXLeft, pixelY - capSizeY);
-                ctx.lineTo(pixelXLeft, pixelY + capSizeY);
-                ctx.moveTo(pixelXRight, pixelY - capSizeY);
-                ctx.lineTo(pixelXRight, pixelY + capSizeY);
-                ctx.stroke();
-            }
-        });
+//                 const capSizeY = (pixelYTop - pixelYBottom) / 10;
+//                 ctx.beginPath();
+//                 ctx.moveTo(pixelXLeft, pixelY - capSizeY);
+//                 ctx.lineTo(pixelXLeft, pixelY + capSizeY);
+//                 ctx.moveTo(pixelXRight, pixelY - capSizeY);
+//                 ctx.lineTo(pixelXRight, pixelY + capSizeY);
+//                 ctx.stroke();
+//             }
+//         });
 
-        ctx.restore();
-    },
-};
+//         ctx.restore();
+//     },
+// };
 
 class ZoomChart extends ChartBase {
     U = { x: 0, y: 0 };
     constructor() {
         super();
         this.canvas = document.getElementById("chart-2");
+        this.errorBarsPlugin.parent = this;
     }
+
+    errorBarsPlugin = {
+        id: "errorBars",
+        beforeDatasetsDraw(chart) {
+            // if (!chart.isDatasetVisible(12)) return;
+            if (!this.parent.sets.showU) return;
+
+            const ctx = chart.ctx;
+            const xAxis = chart.scales.x;
+            const yAxis = chart.scales.y;
+
+            const dataset = chart.data.datasets[12];
+            if (!dataset || !dataset.data) return;
+
+            ctx.save();
+            ctx.strokeStyle = "black";
+            ctx.lineWidth = 1;
+
+            dataset.data.forEach(pt => {
+                if (pt.Uy && pt.Ux) {
+                    const pixelX = xAxis.getPixelForValue(pt.x);
+                    const pixelYTop = yAxis.getPixelForValue(pt.y + pt.Uy);
+                    const pixelYBottom = yAxis.getPixelForValue(pt.y - pt.Uy);
+
+                    const pixelY = yAxis.getPixelForValue(pt.y);
+                    const pixelXLeft = xAxis.getPixelForValue(pt.x - pt.Ux);
+                    const pixelXRight = xAxis.getPixelForValue(pt.x + pt.Ux);
+
+                    // y!
+                    ctx.beginPath();
+                    ctx.moveTo(pixelX, pixelYTop);
+                    ctx.lineTo(pixelX, pixelYBottom);
+                    ctx.stroke();
+
+                    const capSizeX = (pixelXRight - pixelXLeft) / 10;
+                    ctx.beginPath();
+                    ctx.moveTo(pixelX - capSizeX, pixelYTop);
+                    ctx.lineTo(pixelX + capSizeX, pixelYTop);
+                    ctx.moveTo(pixelX - capSizeX, pixelYBottom);
+                    ctx.lineTo(pixelX + capSizeX, pixelYBottom);
+                    ctx.stroke();
+
+                    // x!
+                    ctx.beginPath();
+                    ctx.moveTo(pixelXRight, pixelY);
+                    ctx.lineTo(pixelXLeft, pixelY);
+                    ctx.stroke();
+
+                    const capSizeY = (pixelYTop - pixelYBottom) / 10;
+                    ctx.beginPath();
+                    ctx.moveTo(pixelXLeft, pixelY - capSizeY);
+                    ctx.lineTo(pixelXLeft, pixelY + capSizeY);
+                    ctx.moveTo(pixelXRight, pixelY - capSizeY);
+                    ctx.lineTo(pixelXRight, pixelY + capSizeY);
+                    ctx.stroke();
+                }
+            });
+
+            ctx.restore();
+        },
+    };
 
     build(maxUx, maxUy) {
         this.U.x = maxUx;
@@ -77,6 +141,9 @@ class ZoomChart extends ChartBase {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                animation: {
+                    duration: 500,
+                },
                 plugins: {
                     legend: {
                         display: false,
@@ -116,7 +183,7 @@ class ZoomChart extends ChartBase {
                 },
                 scales: {
                     x: {
-                        max: this.U.x * 20,
+                        // max: this.U.x * 20,
                         ticks: {
                             font: {
                                 size: 16,
@@ -124,7 +191,7 @@ class ZoomChart extends ChartBase {
                         },
                     },
                     y: {
-                        max: this.U.y * 20,
+                        // max: this.U.y * 20,
                         position: "left",
                         ticks: {
                             font: {
@@ -138,13 +205,18 @@ class ZoomChart extends ChartBase {
                     },
                 },
             },
-            plugins: [errorBarsPlugin, this.precalculateYTicks],
+            // plugins: [errorBarsPlugin, this.precalculateYTicks],
+            plugins: [this.errorBarsPlugin, this.precalculateYTicks],
             data: this.data,
         });
+
+        setTimeout(() => this.updateZoomedView(this.data.datasets[12].data[0]), 1000);
     }
 
     setMaxU(maxU) {
+        if (this.U.x === maxU.x && this.U.y === maxU.y) return;
         this.U = maxU;
+        this.updateZoomedView(this.data.datasets[12].data[0]);
     }
 
     updateZoomedView(pointData) {
