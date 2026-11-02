@@ -1,6 +1,6 @@
 import {
     Chart,
-    Legend,
+    // Legend,
     LinearScale,
     LineElement,
     PointElement,
@@ -15,7 +15,7 @@ Chart.register(
     PointElement,
     LinearScale,
     LineElement,
-    Legend,
+    // Legend,
     Tooltip,
     zoomPlugin,
 );
@@ -25,7 +25,7 @@ export default class ChartBase {
     chart = null;
     canvas = null;
     ticksCache = [];
-    expOrder = 0;
+    // expOrder = 0;
 
     addDataset({ label, data, pointStyle, width, color, fill = false, radius = 5 }) {
         this.data.datasets.push({
@@ -65,11 +65,21 @@ export default class ChartBase {
         adjusted: [1, 3, 5],
         experimental: [12],
         raw: [6, 7, 8, 9, 10, 11],
+        excludedF: new Set(),
+        adjAreExcluded: false,
     };
 
     toggleDataset(setName, visible) {
+        if (setName.startsWith("f")) {
+            if (visible) this.sets.excludedF.delete(this.sets[setName][1]);
+            else this.sets.excludedF.add(this.sets[setName][1]);
+        } else if (setName === "adjusted") {
+            this.sets.adjAreExcluded = !visible;
+        }
         for (const n of this.sets[setName]) {
+            if (setName === "adjusted" && visible && this.sets.excludedF.has(n)) continue;
             this.chart.setDatasetVisibility(n, visible);
+            if (setName.startsWith("f") && this.sets.adjAreExcluded) break;
         }
         this.chart.update();
     }

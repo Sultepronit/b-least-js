@@ -36,10 +36,25 @@ class MainChart extends ChartBase {
                         bodyFont: {
                             size: 16,
                         },
+                        filter: item => {
+                            return !item.dataset.label.startsWith("(");
+                        },
                         callbacks: {
-                            title: function (context) {
-                                // return formatUkDate(context[0].label)
-                                console.log(context);
+                            label: item => {
+                                // console.log(item);
+                                // console.log(item.dataset.label);
+                                const label = item.dataset.label;
+                                // let x = item.parsed.x;
+                                // let y = item.parsed.y;
+                                const x = item.parsed.x.toPrecision(4);
+                                const y = item.parsed.y.toPrecision(6);
+
+                                // if (item.dataset.label.startsWith("f")) {
+                                //     x = x.toFixed(4);
+                                //     y = y.toPrecision(6);
+                                // }
+
+                                return `${label}: (${x}; ${y})`;
                             },
                         },
                     },
@@ -95,19 +110,12 @@ class MainChart extends ChartBase {
                         const di = 12;
                         const element =
                             activeElements.find(e => e.datasetIndex === di) || activeElements[0];
-                        // console.log(element);
-                        // if (!element) return;
+
                         const datasetIndex = element.datasetIndex;
                         const index = element.index;
 
                         const pointData = chart.data.datasets[datasetIndex].data[index];
-                        // const pointData = chart.data.datasets[di].data[index];
-                        // console.log(pointData);
 
-                        // const pointX = pointData.x;
-                        // const pointY = pointData.y;
-
-                        // updateZoomedView(pointX, pointY);
                         zoomChart.updateZoomedView(pointData);
                     }
                 },

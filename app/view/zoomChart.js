@@ -4,6 +4,7 @@ import ChartBase from "./chartBase";
 const errorBarsPlugin = {
     id: "errorBars",
     beforeDatasetsDraw(chart) {
+        if (!chart.isDatasetVisible(12)) return;
         const ctx = chart.ctx;
         const xAxis = chart.scales.x;
         const yAxis = chart.scales.y;
@@ -15,7 +16,6 @@ const errorBarsPlugin = {
         ctx.strokeStyle = "black";
         ctx.lineWidth = 1;
 
-        // Проходимо по кожній точці циклом
         dataset.data.forEach(pt => {
             if (pt.Uy && pt.Ux) {
                 const pixelX = xAxis.getPixelForValue(pt.x);
@@ -32,9 +32,7 @@ const errorBarsPlugin = {
                 ctx.lineTo(pixelX, pixelYBottom);
                 ctx.stroke();
 
-                // const capSizeX = pixelY - pixelXLeft;
                 const capSizeX = (pixelXRight - pixelXLeft) / 10;
-                // console.log(pixelY, pixelXLeft);
                 ctx.beginPath();
                 ctx.moveTo(pixelX - capSizeX, pixelYTop);
                 ctx.lineTo(pixelX + capSizeX, pixelYTop);
@@ -48,9 +46,7 @@ const errorBarsPlugin = {
                 ctx.lineTo(pixelXLeft, pixelY);
                 ctx.stroke();
 
-                // const capSizeY = pixelX - pixelYBottom;
                 const capSizeY = (pixelYTop - pixelYBottom) / 10;
-                // console.log(pixelX, pixelYBottom);
                 ctx.beginPath();
                 ctx.moveTo(pixelXLeft, pixelY - capSizeY);
                 ctx.lineTo(pixelXLeft, pixelY + capSizeY);
@@ -64,16 +60,6 @@ const errorBarsPlugin = {
     },
 };
 
-// const precalculateYTicks2 = {
-//     id: "precalculateYTicks",
-//     afterBuildTicks: scale => {
-//         console.log("here we go!");
-//         console.log(scale);
-//         if (scale.id != "y") return;
-//         console.log(scale.ticks);
-//     },
-// };
-
 class ZoomChart extends ChartBase {
     U = { x: 0, y: 0 };
     constructor() {
@@ -84,7 +70,7 @@ class ZoomChart extends ChartBase {
     build(maxUx, maxUy) {
         this.U.x = maxUx;
         this.U.y = maxUy;
-        console.log(this.expOrder);
+        // console.log(this.expOrder);
 
         this.chart = new Chart(this.canvas, {
             type: "scatter",
@@ -146,12 +132,6 @@ class ZoomChart extends ChartBase {
                             },
                             // maxTicksLimit: 20,
                             callback: function (value) {
-                                // console.log(this.expOrder);
-                                // if (Math.abs(value) > 1000) {
-                                //     return value.toExponential(3);
-                                // }
-                                // return value.toLocaleString();
-                                // console.log(this.chart._yTicks);
                                 return this.chart._yTicks?.[value] ?? value;
                             },
                         },
