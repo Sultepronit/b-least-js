@@ -1,4 +1,4 @@
-import { calculate_s, calculateAverage, determineOrder } from "./helpers";
+import { calculate_s, calculateAverage } from "./helpers";
 import iso6143 from "./iso6143";
 
 const data = [
@@ -78,9 +78,10 @@ const data = [
 
 export function get10723(index) {
     console.log();
-    if (index == data.length) {
-        return iso6143[1];
+    if (index >= data.length) {
+        return iso6143[index - data.length];
     }
+
     const { name, x, ux, responses } = data[index];
 
     const y = responses.map(e => calculateAverage(e));
@@ -93,6 +94,3 @@ export function get10723(index) {
         responses,
     };
 }
-
-const d1 = get10723(2);
-determineOrder(d1.responses[6]);

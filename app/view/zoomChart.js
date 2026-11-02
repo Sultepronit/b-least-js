@@ -143,6 +143,10 @@ class ZoomChart extends ChartBase {
         });
     }
 
+    setMaxU(maxU) {
+        this.U = maxU;
+    }
+
     updateZoomedView(pointData) {
         const Ux = pointData.Ux ?? this.U.x;
         this.chart.options.scales.x.min = pointData.x - Ux;
@@ -151,6 +155,7 @@ class ZoomChart extends ChartBase {
         const Uy = pointData.Uy ?? this.U.y;
         this.chart.options.scales.y.min = pointData.y - Uy;
         this.chart.options.scales.y.max = pointData.y + Uy;
+        // console.log(Ux, Uy);
 
         this.chart.update("none");
     }

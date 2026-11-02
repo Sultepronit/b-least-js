@@ -50,6 +50,8 @@ export default function prepareChartData(setNumber, type = "y") {
     const fns = [];
     for (let i = 1; i <= 3; i++) {
         fns.push(presentFn(inputData, i, type));
+        if (i === 1 && inputData.x.length < 5) break;
+        if (i === 2 && inputData.x.length < 7) break;
     }
 
     fillResultsTable(fns, type);

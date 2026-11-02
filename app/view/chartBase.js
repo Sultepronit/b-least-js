@@ -43,18 +43,21 @@ export default class ChartBase {
     }
 
     update({ fns, expDots, y, maxU }) {
-        this.chart.data.datasets[0].data = fns[2].line;
-        this.chart.data.datasets[1].data = fns[2].corr;
-        this.chart.data.datasets[2].data = fns[1].line;
-        this.chart.data.datasets[3].data = fns[1].corr;
-        this.chart.data.datasets[4].data = fns[0].line;
-        this.chart.data.datasets[5].data = fns[0].corr;
+        this.chart.data.datasets[0].data = fns?.[2]?.line;
+        this.chart.data.datasets[1].data = fns?.[2]?.corr;
+        this.chart.data.datasets[2].data = fns?.[1]?.line;
+        this.chart.data.datasets[3].data = fns?.[1]?.corr;
+        this.chart.data.datasets[4].data = fns?.[0]?.line;
+        this.chart.data.datasets[5].data = fns?.[0]?.corr;
         // for (let i = 0; i < expDots.length; i++) {
         for (let i = 0; i < 6; i++) {
             this.chart.data.datasets[6 + i].data = expDots[i];
             // console.log(expDots[i]);
         }
         this.chart.data.datasets[12].data = y;
+
+        this.setMaxU && this.setMaxU(maxU);
+
         this.chart.update();
     }
 

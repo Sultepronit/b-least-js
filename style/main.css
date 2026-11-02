@@ -25,6 +25,7 @@ h3 {
 td,
 th {
     padding-inline: 0.4em;
+    text-wrap: nowrap;
 }
 
 table,
